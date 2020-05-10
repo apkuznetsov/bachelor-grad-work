@@ -8,7 +8,7 @@ using Webapp;
 
 namespace Webapp.Migrations
 {
-    [DbContext(typeof(WebappDbContext))]
+    [DbContext(typeof(webappdbContext))]
     [Migration("20200510074659_Initial")]
     partial class Initial
     {
