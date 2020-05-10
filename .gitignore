@@ -273,5 +273,6 @@ __pycache__/
 
 # End of https://www.gitignore.io/api/aspnetcore
 
-wwwroot/lib/
 Migrations/
+
+Webapp/wwwroot/lib/
