@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Webapp", "Webapp.csproj", "{730C0671-5C1D-43A5-A858-1E96DBD8BAC7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C484ECC8-790B-464F-9E73-9A0852CA494A} = {C484ECC8-790B-464F-9E73-9A0852CA494A}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetUser", "..\AspNetUser\AspNetUser.csproj", "{C484ECC8-790B-464F-9E73-9A0852CA494A}"
 EndProject
