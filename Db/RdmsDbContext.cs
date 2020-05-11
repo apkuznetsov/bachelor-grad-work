@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Webapp
 {
-    public partial class webappdbContext : DbContext
+    public partial class RdmsDbContext : DbContext
     {
-        public webappdbContext()
+        public RdmsDbContext()
         {
         }
 
-        public webappdbContext(DbContextOptions<webappdbContext> options)
+        public RdmsDbContext(DbContextOptions<RdmsDbContext> options)
             : base(options)
         {
         }
