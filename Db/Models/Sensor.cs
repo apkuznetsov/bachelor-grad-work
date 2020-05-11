@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Webapp
 {
-    public partial class Sensors
+    public partial class Sensor
     {
-        public Sensors()
+        public Sensor()
         {
             ExperimentSensors = new HashSet<ExperimentSensors>();
             ProcessingSensors = new HashSet<ProcessingSensors>();

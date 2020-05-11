@@ -10,6 +10,6 @@ namespace Webapp
         public int SensorId { get; set; }
 
         public virtual Experiments Experiment { get; set; }
-        public virtual Sensors Sensor { get; set; }
+        public virtual Sensor Sensor { get; set; }
     }
 }

@@ -7,12 +7,12 @@ namespace Webapp
     {
         public CommunicationProtocols()
         {
-            Sensors = new HashSet<Sensors>();
+            Sensors = new HashSet<Sensor>();
         }
 
         public int CommunicationProtocolId { get; set; }
         public string ProtocolName { get; set; }
 
-        public virtual ICollection<Sensors> Sensors { get; set; }
+        public virtual ICollection<Sensor> Sensors { get; set; }
     }
 }

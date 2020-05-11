@@ -7,13 +7,13 @@ namespace Webapp
     {
         public Datatypes()
         {
-            Sensors = new HashSet<Sensors>();
+            Sensors = new HashSet<Sensor>();
         }
 
         public int DataTypeId { get; set; }
         public string Metadata { get; set; }
         public string Schema { get; set; }
 
-        public virtual ICollection<Sensors> Sensors { get; set; }
+        public virtual ICollection<Sensor> Sensors { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -33,7 +33,7 @@ namespace Webapp
         public virtual DbSet<ProcessingSensors> ProcessingSensors { get; set; }
         public virtual DbSet<ProcessingTests> ProcessingTests { get; set; }
         public virtual DbSet<Processings> Processings { get; set; }
-        public virtual DbSet<Sensors> Sensors { get; set; }
+        public virtual DbSet<Sensor> Sensors { get; set; }
         public virtual DbSet<StorageFiles> StorageFiles { get; set; }
         public virtual DbSet<Tags> Tags { get; set; }
         public virtual DbSet<TestParams> TestParams { get; set; }
@@ -319,7 +319,7 @@ namespace Webapp
                 entity.Property(e => e.StartTimeBorder).HasColumnType("time with time zone");
             });
 
-            modelBuilder.Entity<Sensors>(entity =>
+            modelBuilder.Entity<Sensor>(entity =>
             {
                 entity.HasKey(e => e.SensorId)
                     .HasName("PK_Sensors");
