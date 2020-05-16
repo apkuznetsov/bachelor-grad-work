@@ -2,15 +2,15 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace Webapp
+namespace Db
 {
-    public partial class RdmsDbContext : DbContext
+    public partial class webappdb2Context : DbContext
     {
-        public RdmsDbContext()
+        public webappdb2Context()
         {
         }
 
-        public RdmsDbContext(DbContextOptions<RdmsDbContext> options)
+        public webappdb2Context(DbContextOptions<webappdb2Context> options)
             : base(options)
         {
         }
@@ -33,19 +33,22 @@ namespace Webapp
         public virtual DbSet<ProcessingSensors> ProcessingSensors { get; set; }
         public virtual DbSet<ProcessingTests> ProcessingTests { get; set; }
         public virtual DbSet<Processings> Processings { get; set; }
-        public virtual DbSet<Sensor> Sensors { get; set; }
+        public virtual DbSet<Sensors> Sensors { get; set; }
         public virtual DbSet<StorageFiles> StorageFiles { get; set; }
         public virtual DbSet<Tags> Tags { get; set; }
         public virtual DbSet<TestParams> TestParams { get; set; }
         public virtual DbSet<TestStorageFiles> TestStorageFiles { get; set; }
         public virtual DbSet<Tests> Tests { get; set; }
+        public virtual DbSet<UserExperiments> UserExperiments { get; set; }
         public virtual DbSet<Users> Users { get; set; }
+        public virtual DbSet<Users1> Users1 { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=webappdb;Username=postgres;Password=password");
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=webappdb2;Username=postgres;Password=password");
             }
         }
 
@@ -154,7 +157,7 @@ namespace Webapp
 
                 entity.Property(e => e.Schema)
                     .IsRequired()
-                    .HasColumnType("jsonb");
+                    .HasColumnType("json");
             });
 
             modelBuilder.Entity<ExperimentParams>(entity =>
@@ -228,9 +231,15 @@ namespace Webapp
 
                 entity.ToTable("experiments");
 
+                entity.HasIndex(e => e.Name)
+                    .HasName("experiments_Name_key")
+                    .IsUnique();
+
                 entity.Property(e => e.CreatedAt).HasColumnType("time with time zone");
 
                 entity.Property(e => e.Metadata).IsRequired();
+
+                entity.Property(e => e.Name).IsRequired();
             });
 
             modelBuilder.Entity<MetadataParameters>(entity =>
@@ -311,14 +320,20 @@ namespace Webapp
 
                 entity.ToTable("processings");
 
+                entity.HasIndex(e => e.Name)
+                    .HasName("processings_Name_key")
+                    .IsUnique();
+
                 entity.Property(e => e.EndTimeBorder).HasColumnType("time with time zone");
 
                 entity.Property(e => e.Metadata).IsRequired();
 
+                entity.Property(e => e.Name).IsRequired();
+
                 entity.Property(e => e.StartTimeBorder).HasColumnType("time with time zone");
             });
 
-            modelBuilder.Entity<Sensor>(entity =>
+            modelBuilder.Entity<Sensors>(entity =>
             {
                 entity.HasKey(e => e.SensorId)
                     .HasName("PK_Sensors");
@@ -415,9 +430,15 @@ namespace Webapp
 
                 entity.ToTable("tests");
 
+                entity.HasIndex(e => e.Name)
+                    .HasName("tests_Name_key")
+                    .IsUnique();
+
                 entity.Property(e => e.EndedTime).HasColumnType("timestamp with time zone");
 
                 entity.Property(e => e.Metadata).IsRequired();
+
+                entity.Property(e => e.Name).IsRequired();
 
                 entity.Property(e => e.StartedTime)
                     .HasColumnType("timestamp with time zone")
@@ -428,6 +449,40 @@ namespace Webapp
                     .HasForeignKey(d => d.ExperimentId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Test_ExperimentId_Experiment");
+            });
+
+            modelBuilder.Entity<UserExperiments>(entity =>
+            {
+                entity.ToTable("user_experiments");
+
+                entity.Property(e => e.ExperimentId).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.UserId).ValueGeneratedOnAdd();
+            });
+
+            modelBuilder.Entity<Users>(entity =>
+            {
+                entity.HasKey(e => e.UserId)
+                    .HasName("PK_User");
+
+                entity.ToTable("users");
+
+                entity.HasIndex(e => e.Email)
+                    .HasName("constraint_unique_user_email")
+                    .IsUnique();
+
+                entity.Property(e => e.Email).IsRequired();
+
+                entity.Property(e => e.Forename).IsRequired();
+
+                entity.Property(e => e.Password).IsRequired();
+
+                entity.Property(e => e.Surname).IsRequired();
+            });
+
+            modelBuilder.Entity<Users1>(entity =>
+            {
+                entity.ToTable("Users");
             });
 
             OnModelCreatingPartial(modelBuilder);

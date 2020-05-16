@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Webapp
+namespace Db
 {
-    public partial class Sensor
+    public partial class Sensors
     {
-        public Sensor()
+        public Sensors()
         {
             ExperimentSensors = new HashSet<ExperimentSensors>();
             ProcessingSensors = new HashSet<ProcessingSensors>();

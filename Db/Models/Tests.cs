@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Webapp
+namespace Db
 {
     public partial class Tests
     {
@@ -17,6 +17,7 @@ namespace Webapp
         public int ExperimentId { get; set; }
         public DateTime StartedTime { get; set; }
         public DateTime? EndedTime { get; set; }
+        public string Name { get; set; }
 
         public virtual Experiments Experiment { get; set; }
         public virtual ICollection<ProcessingTests> ProcessingTests { get; set; }

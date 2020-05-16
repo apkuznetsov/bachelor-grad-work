@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Webapp
+namespace Db
 {
     public partial class Experiments
     {
@@ -16,6 +16,7 @@ namespace Webapp
         public int ExperimentId { get; set; }
         public string Metadata { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
+        public string Name { get; set; }
 
         public virtual ICollection<ExperimentParams> ExperimentParams { get; set; }
         public virtual ICollection<ExperimentSensors> ExperimentSensors { get; set; }
