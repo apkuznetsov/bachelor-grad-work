@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Db
+namespace WebappDb
 {
     public partial class ProcessingTests
     {
