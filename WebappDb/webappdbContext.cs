@@ -2,26 +2,19 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace Db
+namespace WebappDb
 {
-    public partial class webappdb2Context : DbContext
+    public partial class webappdbContext : DbContext
     {
-        public webappdb2Context()
+        public webappdbContext()
         {
         }
 
-        public webappdb2Context(DbContextOptions<webappdb2Context> options)
+        public webappdbContext(DbContextOptions<webappdbContext> options)
             : base(options)
         {
         }
 
-        public virtual DbSet<AspNetRoleClaims> AspNetRoleClaims { get; set; }
-        public virtual DbSet<AspNetRoles> AspNetRoles { get; set; }
-        public virtual DbSet<AspNetUserClaims> AspNetUserClaims { get; set; }
-        public virtual DbSet<AspNetUserLogins> AspNetUserLogins { get; set; }
-        public virtual DbSet<AspNetUserRoles> AspNetUserRoles { get; set; }
-        public virtual DbSet<AspNetUserTokens> AspNetUserTokens { get; set; }
-        public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
         public virtual DbSet<CommunicationProtocols> CommunicationProtocols { get; set; }
         public virtual DbSet<Datatypes> Datatypes { get; set; }
         public virtual DbSet<ExperimentParams> ExperimentParams { get; set; }
@@ -41,99 +34,18 @@ namespace Db
         public virtual DbSet<Tests> Tests { get; set; }
         public virtual DbSet<UserExperiments> UserExperiments { get; set; }
         public virtual DbSet<Users> Users { get; set; }
-        public virtual DbSet<Users1> Users1 { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=webappdb2;Username=postgres;Password=password");
+                optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=webappdb;Username=postgres;Password=password");
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<AspNetRoleClaims>(entity =>
-            {
-                entity.HasIndex(e => e.RoleId);
-
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.RoleId).IsRequired();
-
-                entity.HasOne(d => d.Role)
-                    .WithMany(p => p.AspNetRoleClaims)
-                    .HasForeignKey(d => d.RoleId);
-            });
-
-            modelBuilder.Entity<AspNetRoles>(entity =>
-            {
-                entity.HasIndex(e => e.NormalizedName)
-                    .HasName("RoleNameIndex")
-                    .IsUnique();
-            });
-
-            modelBuilder.Entity<AspNetUserClaims>(entity =>
-            {
-                entity.HasIndex(e => e.UserId);
-
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.UserId).IsRequired();
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.AspNetUserClaims)
-                    .HasForeignKey(d => d.UserId);
-            });
-
-            modelBuilder.Entity<AspNetUserLogins>(entity =>
-            {
-                entity.HasKey(e => new { e.LoginProvider, e.ProviderKey });
-
-                entity.HasIndex(e => e.UserId);
-
-                entity.Property(e => e.UserId).IsRequired();
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.AspNetUserLogins)
-                    .HasForeignKey(d => d.UserId);
-            });
-
-            modelBuilder.Entity<AspNetUserRoles>(entity =>
-            {
-                entity.HasKey(e => new { e.UserId, e.RoleId });
-
-                entity.HasIndex(e => e.RoleId);
-
-                entity.HasOne(d => d.Role)
-                    .WithMany(p => p.AspNetUserRoles)
-                    .HasForeignKey(d => d.RoleId);
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.AspNetUserRoles)
-                    .HasForeignKey(d => d.UserId);
-            });
-
-            modelBuilder.Entity<AspNetUserTokens>(entity =>
-            {
-                entity.HasKey(e => new { e.UserId, e.LoginProvider, e.Name });
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.AspNetUserTokens)
-                    .HasForeignKey(d => d.UserId);
-            });
-
-            modelBuilder.Entity<AspNetUsers>(entity =>
-            {
-                entity.HasIndex(e => e.NormalizedEmail)
-                    .HasName("EmailIndex");
-
-                entity.HasIndex(e => e.NormalizedUserName)
-                    .HasName("UserNameIndex")
-                    .IsUnique();
-            });
-
             modelBuilder.Entity<CommunicationProtocols>(entity =>
             {
                 entity.HasKey(e => e.CommunicationProtocolId)
@@ -232,7 +144,7 @@ namespace Db
                 entity.ToTable("experiments");
 
                 entity.HasIndex(e => e.Name)
-                    .HasName("experiments_Name_key")
+                    .HasName("constraint_unique_experiment_name")
                     .IsUnique();
 
                 entity.Property(e => e.CreatedAt).HasColumnType("time with time zone");
@@ -321,7 +233,7 @@ namespace Db
                 entity.ToTable("processings");
 
                 entity.HasIndex(e => e.Name)
-                    .HasName("processings_Name_key")
+                    .HasName("constraint_unique_processing_name")
                     .IsUnique();
 
                 entity.Property(e => e.EndTimeBorder).HasColumnType("time with time zone");
@@ -431,7 +343,7 @@ namespace Db
                 entity.ToTable("tests");
 
                 entity.HasIndex(e => e.Name)
-                    .HasName("tests_Name_key")
+                    .HasName("constraint_unique_test_name")
                     .IsUnique();
 
                 entity.Property(e => e.EndedTime).HasColumnType("timestamp with time zone");
@@ -458,6 +370,18 @@ namespace Db
                 entity.Property(e => e.ExperimentId).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.UserId).ValueGeneratedOnAdd();
+
+                entity.HasOne(d => d.Experiment)
+                    .WithMany(p => p.UserExperiments)
+                    .HasForeignKey(d => d.ExperimentId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_User_Experiments_ExperimentId");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.UserExperiments)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_User_Experiments_UserId");
             });
 
             modelBuilder.Entity<Users>(entity =>
@@ -478,11 +402,6 @@ namespace Db
                 entity.Property(e => e.Password).IsRequired();
 
                 entity.Property(e => e.Surname).IsRequired();
-            });
-
-            modelBuilder.Entity<Users1>(entity =>
-            {
-                entity.ToTable("Users");
             });
 
             OnModelCreatingPartial(modelBuilder);
