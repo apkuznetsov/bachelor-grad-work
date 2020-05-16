@@ -18,6 +18,8 @@ namespace WebappDb
         public int Port { get; set; }
         public int CommunicationProtocolId { get; set; }
 
+        public string Name { get; set; }
+
         public virtual CommunicationProtocols CommunicationProtocol { get; set; }
         public virtual Datatypes DataType { get; set; }
         public virtual ICollection<ExperimentSensors> ExperimentSensors { get; set; }
