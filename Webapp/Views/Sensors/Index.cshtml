@@ -1,58 +1,30 @@
 ﻿@model IEnumerable<WebappDb.Sensors>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Список датчиков";
 }
 
-<h1>Index</h1>
+<h1>Список датчиков</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Создать новый датчик</a>
 </p>
 <table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Metadata)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IpAddress)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Port)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CommunicationProtocol)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DataType)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Metadata)
+                <a asp-action="Details" asp-route-id="@item.SensorId">
+                    @Html.DisplayFor(modelItem => item.Name)
+                </a>               
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IpAddress)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Port)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CommunicationProtocol.ProtocolName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DataType.Metadata)
-            </td>
+            @*
             <td>
                 <a asp-action="Edit" asp-route-id="@item.SensorId">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.SensorId">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.SensorId">Delete</a>
             </td>
+            *@
         </tr>
 }
     </tbody>
