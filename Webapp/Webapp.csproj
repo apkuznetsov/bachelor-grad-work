@@ -18,7 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Db\WebappDb.csproj" />
     <ProjectReference Include="..\WebappDb\WebappDb.csproj" />
   </ItemGroup>
 
