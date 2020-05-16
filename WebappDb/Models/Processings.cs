@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Webapp
+namespace WebappDb
 {
     public partial class Processings
     {
@@ -16,6 +16,7 @@ namespace Webapp
         public string Metadata { get; set; }
         public DateTimeOffset StartTimeBorder { get; set; }
         public DateTimeOffset EndTimeBorder { get; set; }
+        public string Name { get; set; }
 
         public virtual ICollection<ProcessedData> ProcessedData { get; set; }
         public virtual ICollection<ProcessingSensors> ProcessingSensors { get; set; }

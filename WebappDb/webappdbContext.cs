@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace Webapp
+namespace WebappDb
 {
     public partial class webappdbContext : DbContext
     {
@@ -15,13 +15,6 @@ namespace Webapp
         {
         }
 
-        public virtual DbSet<AspNetRoleClaims> AspNetRoleClaims { get; set; }
-        public virtual DbSet<AspNetRoles> AspNetRoles { get; set; }
-        public virtual DbSet<AspNetUserClaims> AspNetUserClaims { get; set; }
-        public virtual DbSet<AspNetUserLogins> AspNetUserLogins { get; set; }
-        public virtual DbSet<AspNetUserRoles> AspNetUserRoles { get; set; }
-        public virtual DbSet<AspNetUserTokens> AspNetUserTokens { get; set; }
-        public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
         public virtual DbSet<CommunicationProtocols> CommunicationProtocols { get; set; }
         public virtual DbSet<Datatypes> Datatypes { get; set; }
         public virtual DbSet<ExperimentParams> ExperimentParams { get; set; }
@@ -39,6 +32,7 @@ namespace Webapp
         public virtual DbSet<TestParams> TestParams { get; set; }
         public virtual DbSet<TestStorageFiles> TestStorageFiles { get; set; }
         public virtual DbSet<Tests> Tests { get; set; }
+        public virtual DbSet<UserExperiments> UserExperiments { get; set; }
         public virtual DbSet<Users> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -52,86 +46,6 @@ namespace Webapp
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<AspNetRoleClaims>(entity =>
-            {
-                entity.HasIndex(e => e.RoleId);
-
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.RoleId).IsRequired();
-
-                entity.HasOne(d => d.Role)
-                    .WithMany(p => p.AspNetRoleClaims)
-                    .HasForeignKey(d => d.RoleId);
-            });
-
-            modelBuilder.Entity<AspNetRoles>(entity =>
-            {
-                entity.HasIndex(e => e.NormalizedName)
-                    .HasName("RoleNameIndex")
-                    .IsUnique();
-            });
-
-            modelBuilder.Entity<AspNetUserClaims>(entity =>
-            {
-                entity.HasIndex(e => e.UserId);
-
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.UserId).IsRequired();
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.AspNetUserClaims)
-                    .HasForeignKey(d => d.UserId);
-            });
-
-            modelBuilder.Entity<AspNetUserLogins>(entity =>
-            {
-                entity.HasKey(e => new { e.LoginProvider, e.ProviderKey });
-
-                entity.HasIndex(e => e.UserId);
-
-                entity.Property(e => e.UserId).IsRequired();
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.AspNetUserLogins)
-                    .HasForeignKey(d => d.UserId);
-            });
-
-            modelBuilder.Entity<AspNetUserRoles>(entity =>
-            {
-                entity.HasKey(e => new { e.UserId, e.RoleId });
-
-                entity.HasIndex(e => e.RoleId);
-
-                entity.HasOne(d => d.Role)
-                    .WithMany(p => p.AspNetUserRoles)
-                    .HasForeignKey(d => d.RoleId);
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.AspNetUserRoles)
-                    .HasForeignKey(d => d.UserId);
-            });
-
-            modelBuilder.Entity<AspNetUserTokens>(entity =>
-            {
-                entity.HasKey(e => new { e.UserId, e.LoginProvider, e.Name });
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.AspNetUserTokens)
-                    .HasForeignKey(d => d.UserId);
-            });
-
-            modelBuilder.Entity<AspNetUsers>(entity =>
-            {
-                entity.HasIndex(e => e.NormalizedEmail)
-                    .HasName("EmailIndex");
-
-                entity.HasIndex(e => e.NormalizedUserName)
-                    .HasName("UserNameIndex")
-                    .IsUnique();
-            });
-
             modelBuilder.Entity<CommunicationProtocols>(entity =>
             {
                 entity.HasKey(e => e.CommunicationProtocolId)
@@ -155,7 +69,7 @@ namespace Webapp
 
                 entity.Property(e => e.Schema)
                     .IsRequired()
-                    .HasColumnType("jsonb");
+                    .HasColumnType("json");
             });
 
             modelBuilder.Entity<ExperimentParams>(entity =>
@@ -229,9 +143,15 @@ namespace Webapp
 
                 entity.ToTable("experiments");
 
+                entity.HasIndex(e => e.Name)
+                    .HasName("constraint_unique_experiment_name")
+                    .IsUnique();
+
                 entity.Property(e => e.CreatedAt).HasColumnType("time with time zone");
 
                 entity.Property(e => e.Metadata).IsRequired();
+
+                entity.Property(e => e.Name).IsRequired();
             });
 
             modelBuilder.Entity<MetadataParameters>(entity =>
@@ -312,9 +232,15 @@ namespace Webapp
 
                 entity.ToTable("processings");
 
+                entity.HasIndex(e => e.Name)
+                    .HasName("constraint_unique_processing_name")
+                    .IsUnique();
+
                 entity.Property(e => e.EndTimeBorder).HasColumnType("time with time zone");
 
                 entity.Property(e => e.Metadata).IsRequired();
+
+                entity.Property(e => e.Name).IsRequired();
 
                 entity.Property(e => e.StartTimeBorder).HasColumnType("time with time zone");
             });
@@ -416,9 +342,15 @@ namespace Webapp
 
                 entity.ToTable("tests");
 
+                entity.HasIndex(e => e.Name)
+                    .HasName("constraint_unique_test_name")
+                    .IsUnique();
+
                 entity.Property(e => e.EndedTime).HasColumnType("timestamp with time zone");
 
                 entity.Property(e => e.Metadata).IsRequired();
+
+                entity.Property(e => e.Name).IsRequired();
 
                 entity.Property(e => e.StartedTime)
                     .HasColumnType("timestamp with time zone")
@@ -429,6 +361,47 @@ namespace Webapp
                     .HasForeignKey(d => d.ExperimentId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Test_ExperimentId_Experiment");
+            });
+
+            modelBuilder.Entity<UserExperiments>(entity =>
+            {
+                entity.ToTable("user_experiments");
+
+                entity.Property(e => e.ExperimentId).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.UserId).ValueGeneratedOnAdd();
+
+                entity.HasOne(d => d.Experiment)
+                    .WithMany(p => p.UserExperiments)
+                    .HasForeignKey(d => d.ExperimentId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_User_Experiments_ExperimentId");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.UserExperiments)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_User_Experiments_UserId");
+            });
+
+            modelBuilder.Entity<Users>(entity =>
+            {
+                entity.HasKey(e => e.UserId)
+                    .HasName("PK_User");
+
+                entity.ToTable("users");
+
+                entity.HasIndex(e => e.Email)
+                    .HasName("constraint_unique_user_email")
+                    .IsUnique();
+
+                entity.Property(e => e.Email).IsRequired();
+
+                entity.Property(e => e.Forename).IsRequired();
+
+                entity.Property(e => e.Password).IsRequired();
+
+                entity.Property(e => e.Surname).IsRequired();
             });
 
             OnModelCreatingPartial(modelBuilder);

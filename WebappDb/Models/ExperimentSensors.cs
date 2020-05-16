@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Webapp
+namespace WebappDb
 {
     public partial class ExperimentSensors
     {
