@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace WebappDb
@@ -8,5 +8,8 @@ namespace WebappDb
         public int UserExperimentsId { get; set; }
         public int UserId { get; set; }
         public int ExperimentId { get; set; }
+
+        public virtual Experiments Experiment { get; set; }
+        public virtual Users User { get; set; }
     }
 }

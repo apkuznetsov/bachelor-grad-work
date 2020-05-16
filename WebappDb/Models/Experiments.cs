@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace WebappDb
@@ -11,6 +11,7 @@ namespace WebappDb
             ExperimentSensors = new HashSet<ExperimentSensors>();
             ExperimentTags = new HashSet<ExperimentTags>();
             Tests = new HashSet<Tests>();
+            UserExperiments = new HashSet<UserExperiments>();
         }
 
         public int ExperimentId { get; set; }
@@ -22,5 +23,6 @@ namespace WebappDb
         public virtual ICollection<ExperimentSensors> ExperimentSensors { get; set; }
         public virtual ICollection<ExperimentTags> ExperimentTags { get; set; }
         public virtual ICollection<Tests> Tests { get; set; }
+        public virtual ICollection<UserExperiments> UserExperiments { get; set; }
     }
 }
