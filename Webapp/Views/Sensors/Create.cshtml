@@ -1,4 +1,4 @@
-﻿@model WebappDb.Sensors
+﻿@model Webapp.Models.SensorViewModel
 
 @{
     ViewData["Title"] = "Создать датчик";
@@ -21,8 +21,9 @@
                 <span asp-validation-for="Metadata" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DataTypeId" class="control-label"></label>
-                <select asp-for="DataTypeId" class ="form-control" asp-items="ViewBag.DataTypeId"></select>
+                <label asp-for="DataType" class="control-label"></label>
+                <input asp-for="DataType" class="form-control" />
+                <span asp-validation-for="DataType" class="text-danger"></span>
             </div>
 
             <div class="form-group">
@@ -51,6 +52,6 @@
 </div>
 
 <div>
-    <a asp-action="Index">Вернуться в список датчиков</a>
+    <a asp-action="Index">Вернуться к списку датчиков</a>
 </div>
 
