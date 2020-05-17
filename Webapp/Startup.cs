@@ -30,6 +30,12 @@ namespace Webapp
             services.AddEntityFrameworkNpgsql().
                 AddDbContext<webappdbContext>(opt => 
                 opt.UseNpgsql(Configuration.GetConnectionString("WebappDbConnection")));
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
