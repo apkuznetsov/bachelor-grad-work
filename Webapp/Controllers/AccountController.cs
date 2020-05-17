@@ -64,7 +64,14 @@ namespace Webapp.Controllers
 
                 if (user == null)
                 {
-                    _context.Add(new Users { Email = registerVm.Email, Password = registerVm.Password });
+                    _context.Add(new Users
+                    {
+                        Email = registerVm.Email,
+                        Password = registerVm.Password,
+                        Surname = registerVm.Surname,
+                        Forename = registerVm.Forename
+                    });
+
                     await _context.SaveChangesAsync().ConfigureAwait(true);
 
                     await Authenticate(registerVm.Email).ConfigureAwait(true);

@@ -14,5 +14,11 @@ namespace Webapp.Models
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "Пароль введён неверно")]
         public string ConfirmPassword { get; set; }
+
+        [Display(Name = "Фамилия")]
+        public string Surname { get; set; }
+
+        [Display(Name = "Имя")]
+        public string Forename { get; set; }
     }
 }
