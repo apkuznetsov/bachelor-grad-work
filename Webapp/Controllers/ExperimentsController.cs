@@ -18,6 +18,8 @@ namespace Webapp.Controllers
         // GET: Experiments
         public async Task<IActionResult> Index()
         {
+            var userId = User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
+
             return View(await _context.Experiments.ToListAsync());
         }
 

@@ -37,7 +37,7 @@ namespace Webapp.Controllers
 
                 if (user != null)
                 {
-                    await Authenticate(loginVm.Email).ConfigureAwait(true);
+                    await Authenticate(user.UserId, loginVm.Email).ConfigureAwait(true);
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -64,17 +64,18 @@ namespace Webapp.Controllers
 
                 if (user == null)
                 {
-                    _context.Add(new Users
+                    Users newUser = new Users
                     {
                         Email = registerVm.Email,
                         Password = registerVm.Password,
                         Surname = registerVm.Surname,
                         Forename = registerVm.Forename
-                    });
+                    };
 
+                    _context.Add(newUser);
                     await _context.SaveChangesAsync().ConfigureAwait(true);
 
-                    await Authenticate(registerVm.Email).ConfigureAwait(true);
+                    await Authenticate(newUser.UserId, registerVm.Email).ConfigureAwait(true);
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -87,17 +88,17 @@ namespace Webapp.Controllers
             return View(registerVm);
         }
 
-        private async Task Authenticate(string userName)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "<Pending>")]
+        private async Task Authenticate(int userId, string userName)
         {
             var claims = new List<Claim>
             {
+                new Claim("UserId", userId.ToString()),
                 new Claim(ClaimsIdentity.DefaultNameClaimType, userName)
             };
 
-            // создаем объект ClaimsIdentity
             ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
 
-            // установка аутентификационных куки
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id)).ConfigureAwait(true);
         }
 
