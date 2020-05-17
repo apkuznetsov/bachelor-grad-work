@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -43,7 +43,7 @@ namespace Webapp.Controllers
                 {
                     SensorId = m.SensorId,
                     Name = m.Name,
-                    Metadata = m.Name,
+                    Metadata = m.Metadata,
                     DatatypeScheme = m.DataType.Schema,
                     CommunicationProtocolName = m.CommunicationProtocol.ProtocolName,
                     IpAddress = m.IpAddress,
