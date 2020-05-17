@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Webapp.Models
 {
-    public class SensorViewModel
+    public class SensorEditViewModel
     {
         public int SensorId { get; set; }
 
@@ -15,8 +12,10 @@ namespace Webapp.Models
         [Display(Name = "Описание")]
         public string Metadata { get; set; }
 
+        public int DataTypeId { get; set; }
+
         [Display(Name = "JSON-схема фиксируемых данных")]
-        public string DataType { get; set; }
+        public string DatatypeScheme { get; set; }
 
         [Display(Name = "Сетевой протокол")]
         public int CommunicationProtocolId { get; set; }

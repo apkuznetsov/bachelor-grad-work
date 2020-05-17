@@ -43,7 +43,7 @@ namespace Webapp.Controllers
                 {
                     SensorId = m.SensorId,
                     Name = m.Name,
-                    Metadata = m.Name,
+                    Metadata = m.Metadata,
                     DatatypeScheme = m.DataType.Schema,
                     CommunicationProtocolName = m.CommunicationProtocol.ProtocolName,
                     IpAddress = m.IpAddress,
@@ -72,7 +72,7 @@ namespace Webapp.Controllers
         // POST: Sensors/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SensorId,Name,Metadata,DataType,CommunicationProtocolId,IpAddress,Port")] SensorViewModel sensorVm)
+        public async Task<IActionResult> Create([Bind("SensorId,Name,Metadata,DataType,CommunicationProtocolId,IpAddress,Port")] SensorCreateViewModel sensorVm)
         {
             if (ModelState.IsValid)
             {
@@ -113,24 +113,35 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
-            var sensors = await _context.Sensors.FindAsync(id);
-            if (sensors == null)
+            SensorEditViewModel sensor = await _context.Sensors.Select(m =>
+                new SensorEditViewModel
+                {
+                    SensorId = m.SensorId,
+                    Name = m.Name,
+                    Metadata = m.Metadata,
+                    DataTypeId = m.DataType.DataTypeId,
+                    DatatypeScheme = m.DataType.Schema,
+                    CommunicationProtocolId = m.CommunicationProtocolId,
+                    IpAddress = m.IpAddress,
+                    Port = m.Port
+                }).FirstOrDefaultAsync(m => m.SensorId == id).ConfigureAwait(true);
+
+            if (sensor == null)
             {
                 return NotFound();
             }
-            ViewData["CommunicationProtocolId"] = new SelectList(_context.CommunicationProtocols, "CommunicationProtocolId", "ProtocolName", sensors.CommunicationProtocolId);
-            ViewData["DataTypeId"] = new SelectList(_context.Datatypes, "DataTypeId", "Metadata", sensors.DataTypeId);
-            return View(sensors);
+
+            ViewData["CommunicationProtocolId"] = new SelectList(_context.CommunicationProtocols, "CommunicationProtocolId", "ProtocolName", sensor.CommunicationProtocolId);
+
+            return View(sensor);
         }
 
         // POST: Sensors/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SensorId,Metadata,DataTypeId,IpAddress,Port,CommunicationProtocolId")] Sensors sensors)
+        public async Task<IActionResult> Edit(int id, [Bind("SensorId,Name,Metadata,DataTypeId,IpAddress,Port,CommunicationProtocolId")] Sensors sensor)
         {
-            if (id != sensors.SensorId)
+            if (id != sensor.SensorId)
             {
                 return NotFound();
             }
@@ -139,12 +150,12 @@ namespace Webapp.Controllers
             {
                 try
                 {
-                    _context.Update(sensors);
-                    await _context.SaveChangesAsync();
+                    _context.Update(sensor);
+                    await _context.SaveChangesAsync().ConfigureAwait(true);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SensorsExists(sensors.SensorId))
+                    if (!SensorsExists(sensor.SensorId))
                     {
                         return NotFound();
                     }
@@ -155,9 +166,10 @@ namespace Webapp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CommunicationProtocolId"] = new SelectList(_context.CommunicationProtocols, "CommunicationProtocolId", "ProtocolName", sensors.CommunicationProtocolId);
-            ViewData["DataTypeId"] = new SelectList(_context.Datatypes, "DataTypeId", "Metadata", sensors.DataTypeId);
-            return View(sensors);
+
+            ViewData["CommunicationProtocolId"] = new SelectList(_context.CommunicationProtocols, "CommunicationProtocolId", "ProtocolName", sensor.CommunicationProtocolId);
+
+            return View(sensor);
         }
 
         // GET: Sensors/Delete/5
