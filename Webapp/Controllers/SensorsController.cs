@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
 using Webapp.Models;
 using WebappDb;
 
@@ -22,8 +20,14 @@ namespace Webapp.Controllers
         // GET: Sensors
         public async Task<IActionResult> Index()
         {
-            var webappdbContext = _context.Sensors.Include(s => s.CommunicationProtocol).Include(s => s.DataType);
-            return View(await webappdbContext.ToListAsync());
+            var sensorNames = _context.Sensors.Select(m =>
+            new SensorNameViewModel
+            {
+                SensorId = m.SensorId,
+                Name = m.Name
+            }).ToList();
+
+            return View(sensorNames);
         }
 
         // GET: Sensors/Details/5
