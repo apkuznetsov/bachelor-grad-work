@@ -1,51 +1,61 @@
-﻿@model WebappDb.Sensors
+﻿@model Webapp.Models.SensorDetailsViewModel
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Удалить датчик";
 }
 
-<h1>Delete</h1>
-
-<h3>Are you sure you want to delete this?</h3>
 <div>
-    <h4>Sensors</h4>
+    <h4>Удалить датчик</h4>
     <hr />
+
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Metadata)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Metadata)
         </dd>
-        <dt class = "col-sm-2">
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DatatypeScheme)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DatatypeScheme)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CommunicationProtocolName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CommunicationProtocolName)
+        </dd>
+
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.IpAddress)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.IpAddress)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Port)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Port)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CommunicationProtocol)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CommunicationProtocol.ProtocolName)
-        </dd class>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DataType)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DataType.Metadata)
-        </dd class>
     </dl>
-    
+</div>
+
+<div>
     <form asp-action="Delete">
         <input type="hidden" asp-for="SensorId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <input type="submit" value="Удалить" class="btn btn-danger" /> |
+        <a asp-action="Index">Вернуться к списку датчиков</a>
     </form>
 </div>
