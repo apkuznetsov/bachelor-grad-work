@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,7 +24,7 @@ namespace Webapp
             services.AddControllersWithViews();
 
             services.AddEntityFrameworkNpgsql().
-                AddDbContext<webappdbContext>(opt => 
+                AddDbContext<webappdbContext>(opt =>
                 opt.UseNpgsql(Configuration.GetConnectionString("WebappDbConnection")));
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
