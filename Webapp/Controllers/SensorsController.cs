@@ -38,16 +38,24 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
-            var sensors = await _context.Sensors
-                .Include(s => s.CommunicationProtocol)
-                .Include(s => s.DataType)
-                .FirstOrDefaultAsync(m => m.SensorId == id);
-            if (sensors == null)
+            SensorDetailsViewModel sensor = await _context.Sensors.Select(m =>
+                new SensorDetailsViewModel
+                {
+                    SensorId = m.SensorId,
+                    Name = m.Name,
+                    Metadata = m.Name,
+                    DatatypeScheme = m.DataType.Schema,
+                    CommunicationProtocolName = m.CommunicationProtocol.ProtocolName,
+                    IpAddress = m.IpAddress,
+                    Port = m.Port
+                }).FirstOrDefaultAsync(m => m.SensorId == id).ConfigureAwait(true);
+
+            if (sensor == null)
             {
                 return NotFound();
             }
 
-            return View(sensors);
+            return View(sensor);
         }
 
         // GET: Sensors/Create
