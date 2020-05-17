@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.ComponentModel.DataAnnotations;
 
-namespace WebappDb
+namespace Webapp.Models
 {
-    public partial class Sensors
+    public class SensorViewModel
     {
-        public Sensors()
-        {
-            ExperimentSensors = new HashSet<ExperimentSensors>();
-            ProcessingSensors = new HashSet<ProcessingSensors>();
-        }
-
         public int SensorId { get; set; }
 
         [Display(Name = "Название")]
@@ -21,7 +16,7 @@ namespace WebappDb
         public string Metadata { get; set; }
 
         [Display(Name = "JSON-схема фиксируемых данных")]
-        public int DataTypeId { get; set; }
+        public string DataType { get; set; }
 
         [Display(Name = "Сетевой протокол")]
         public int CommunicationProtocolId { get; set; }
@@ -31,10 +26,5 @@ namespace WebappDb
 
         [Display(Name = "Порт")]
         public int Port { get; set; }
-
-        public virtual Datatypes DataType { get; set; }
-        public virtual CommunicationProtocols CommunicationProtocol { get; set; }
-        public virtual ICollection<ExperimentSensors> ExperimentSensors { get; set; }
-        public virtual ICollection<ProcessingSensors> ProcessingSensors { get; set; }
     }
 }

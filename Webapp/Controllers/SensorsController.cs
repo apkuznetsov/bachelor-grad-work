@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
+using Webapp.Models;
 using WebappDb;
 
 namespace Webapp.Controllers
@@ -21,8 +20,14 @@ namespace Webapp.Controllers
         // GET: Sensors
         public async Task<IActionResult> Index()
         {
-            var webappdbContext = _context.Sensors.Include(s => s.CommunicationProtocol).Include(s => s.DataType);
-            return View(await webappdbContext.ToListAsync());
+            var sensorNames = _context.Sensors.Select(m =>
+            new SensorNameViewModel
+            {
+                SensorId = m.SensorId,
+                Name = m.Name
+            }).ToList();
+
+            return View(sensorNames);
         }
 
         // GET: Sensors/Details/5
@@ -48,27 +53,48 @@ namespace Webapp.Controllers
         // GET: Sensors/Create
         public IActionResult Create()
         {
-            ViewData["CommunicationProtocolId"] = new SelectList(_context.CommunicationProtocols, "CommunicationProtocolId", "ProtocolName");
-            ViewData["DataTypeId"] = new SelectList(_context.Datatypes, "DataTypeId", "Metadata");
+            ViewData["CommunicationProtocolId"] = new SelectList(
+                _context.CommunicationProtocols,
+                "CommunicationProtocolId",
+                "ProtocolName");
+
             return View();
         }
 
         // POST: Sensors/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SensorId,Metadata,DataTypeId,IpAddress,Port,CommunicationProtocolId")] Sensors sensors)
+        public async Task<IActionResult> Create([Bind("SensorId,Name,Metadata,DataType,CommunicationProtocolId,IpAddress,Port")] SensorViewModel sensorVm)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(sensors);
+                Datatypes newDatatype = new Datatypes();
+                newDatatype.Schema = sensorVm.DataType;
+                _context.Add(newDatatype);
                 await _context.SaveChangesAsync();
+
+                Sensors newSensor = new Sensors();
+                newSensor.SensorId = sensorVm.SensorId;
+                newSensor.Name = sensorVm.Name;
+                newSensor.Metadata = sensorVm.Metadata;
+                newSensor.CommunicationProtocolId = sensorVm.CommunicationProtocolId;
+                newSensor.IpAddress = sensorVm.IpAddress;
+                newSensor.Port = sensorVm.Port;
+                newSensor.DataTypeId = newDatatype.DataTypeId;
+
+                _context.Add(newSensor);
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CommunicationProtocolId"] = new SelectList(_context.CommunicationProtocols, "CommunicationProtocolId", "ProtocolName", sensors.CommunicationProtocolId);
-            ViewData["DataTypeId"] = new SelectList(_context.Datatypes, "DataTypeId", "Metadata", sensors.DataTypeId);
-            return View(sensors);
+
+            ViewData["CommunicationProtocolId"] = new SelectList(
+                _context.CommunicationProtocols,
+                "CommunicationProtocolId",
+                "ProtocolName",
+                sensorVm.CommunicationProtocolId);
+
+            return View(sensorVm);
         }
 
         // GET: Sensors/Edit/5

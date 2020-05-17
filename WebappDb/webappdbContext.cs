@@ -269,6 +269,8 @@ namespace WebappDb
                     .HasForeignKey(d => d.DataTypeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Sensor_DataTypeId_Datatype");
+
+                entity.Property(e => e.Name).IsRequired();
             });
 
             modelBuilder.Entity<StorageFiles>(entity =>
