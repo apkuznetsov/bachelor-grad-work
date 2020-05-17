@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Webapp.Models
 {
-    public class SensorViewModel
+    public class SensorCreateViewModel
     {
         public int SensorId { get; set; }
 
