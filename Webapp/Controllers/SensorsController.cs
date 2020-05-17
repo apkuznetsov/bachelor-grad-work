@@ -18,7 +18,7 @@ namespace Webapp.Controllers
         }
 
         // GET: Sensors
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             var sensorNames = _context.Sensors.Select(m =>
             new SensorNameViewModel
@@ -72,26 +72,32 @@ namespace Webapp.Controllers
         // POST: Sensors/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Проверить аргументы или открытые методы", Justification = "<Ожидание>")]
         public async Task<IActionResult> Create([Bind("SensorId,Name,Metadata,DataType,CommunicationProtocolId,IpAddress,Port")] SensorCreateViewModel sensorVm)
         {
             if (ModelState.IsValid)
             {
-                Datatypes newDatatype = new Datatypes();
-                newDatatype.Schema = sensorVm.DataType;
-                _context.Add(newDatatype);
-                await _context.SaveChangesAsync();
+                Datatypes newDatatype = new Datatypes
+                {
+                    Schema = sensorVm.DataType
+                };
 
-                Sensors newSensor = new Sensors();
-                newSensor.SensorId = sensorVm.SensorId;
-                newSensor.Name = sensorVm.Name;
-                newSensor.Metadata = sensorVm.Metadata;
-                newSensor.CommunicationProtocolId = sensorVm.CommunicationProtocolId;
-                newSensor.IpAddress = sensorVm.IpAddress;
-                newSensor.Port = sensorVm.Port;
-                newSensor.DataTypeId = newDatatype.DataTypeId;
+                _context.Add(newDatatype);
+                await _context.SaveChangesAsync().ConfigureAwait(true);
+
+                Sensors newSensor = new Sensors
+                {
+                    SensorId = sensorVm.SensorId,
+                    Name = sensorVm.Name,
+                    Metadata = sensorVm.Metadata,
+                    CommunicationProtocolId = sensorVm.CommunicationProtocolId,
+                    IpAddress = sensorVm.IpAddress,
+                    Port = sensorVm.Port,
+                    DataTypeId = newDatatype.DataTypeId
+                };
 
                 _context.Add(newSensor);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync().ConfigureAwait(true);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -139,6 +145,7 @@ namespace Webapp.Controllers
         // POST: Sensors/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Проверить аргументы или открытые методы", Justification = "<Ожидание>")]
         public async Task<IActionResult> Edit(int id, [Bind("SensorId,Name,Metadata,DataTypeId,IpAddress,Port,CommunicationProtocolId")] Sensors sensor)
         {
             if (id != sensor.SensorId)
@@ -180,16 +187,24 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
-            var sensors = await _context.Sensors
-                .Include(s => s.CommunicationProtocol)
-                .Include(s => s.DataType)
-                .FirstOrDefaultAsync(m => m.SensorId == id);
-            if (sensors == null)
+            SensorDetailsViewModel sensor = await _context.Sensors.Select(m =>
+                new SensorDetailsViewModel
+                {
+                    SensorId = m.SensorId,
+                    Name = m.Name,
+                    Metadata = m.Metadata,
+                    DatatypeScheme = m.DataType.Schema,
+                    CommunicationProtocolName = m.CommunicationProtocol.ProtocolName,
+                    IpAddress = m.IpAddress,
+                    Port = m.Port
+                }).FirstOrDefaultAsync(m => m.SensorId == id).ConfigureAwait(true);
+
+            if (sensor == null)
             {
                 return NotFound();
             }
 
-            return View(sensors);
+            return View(sensor);
         }
 
         // POST: Sensors/Delete/5
@@ -197,9 +212,10 @@ namespace Webapp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var sensors = await _context.Sensors.FindAsync(id);
+            var sensors = await _context.Sensors.FindAsync(id).ConfigureAwait(true);
             _context.Sensors.Remove(sensors);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync().ConfigureAwait(true);
+
             return RedirectToAction(nameof(Index));
         }
 
