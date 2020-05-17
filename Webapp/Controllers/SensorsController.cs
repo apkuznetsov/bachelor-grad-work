@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -180,16 +180,24 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
-            var sensors = await _context.Sensors
-                .Include(s => s.CommunicationProtocol)
-                .Include(s => s.DataType)
-                .FirstOrDefaultAsync(m => m.SensorId == id);
-            if (sensors == null)
+            SensorDetailsViewModel sensor = await _context.Sensors.Select(m =>
+                new SensorDetailsViewModel
+                {
+                    SensorId = m.SensorId,
+                    Name = m.Name,
+                    Metadata = m.Metadata,
+                    DatatypeScheme = m.DataType.Schema,
+                    CommunicationProtocolName = m.CommunicationProtocol.ProtocolName,
+                    IpAddress = m.IpAddress,
+                    Port = m.Port
+                }).FirstOrDefaultAsync(m => m.SensorId == id).ConfigureAwait(true);
+
+            if (sensor == null)
             {
                 return NotFound();
             }
 
-            return View(sensors);
+            return View(sensor);
         }
 
         // POST: Sensors/Delete/5
@@ -197,9 +205,10 @@ namespace Webapp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var sensors = await _context.Sensors.FindAsync(id);
+            var sensors = await _context.Sensors.FindAsync(id).ConfigureAwait(true);
             _context.Sensors.Remove(sensors);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync().ConfigureAwait(true);
+
             return RedirectToAction(nameof(Index));
         }
 
