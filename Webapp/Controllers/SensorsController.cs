@@ -38,7 +38,7 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
-            SensorDetailsViewModel sensor = await _context.Sensors.Select(m =>
+            SensorDetailsViewModel sensorVm = await _context.Sensors.Select(m =>
                 new SensorDetailsViewModel
                 {
                     SensorId = m.SensorId,
@@ -50,12 +50,12 @@ namespace Webapp.Controllers
                     Port = m.Port
                 }).FirstOrDefaultAsync(m => m.SensorId == id).ConfigureAwait(true);
 
-            if (sensor == null)
+            if (sensorVm == null)
             {
                 return NotFound();
             }
 
-            return View(sensor);
+            return View(sensorVm);
         }
 
         // GET: Sensors/Create
