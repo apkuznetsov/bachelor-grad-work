@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Webapp.Models;
 using WebappDb;
 
 namespace Webapp.Controllers
@@ -15,12 +18,19 @@ namespace Webapp.Controllers
             _context = context;
         }
 
+
         // GET: Experiments
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1305:Укажите IFormatProvider", Justification = "<Ожидание>")]
         public async Task<IActionResult> Index()
         {
-            var userId = User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
+            var currUserId = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value);
 
-            return View(await _context.Experiments.ToListAsync());
+            // SELECT "ExperimentId", "Name" FROM experiments WHERE "ExperimentId" = Any (SELECT "ExperimentId" FROM user_experiments WHERE "UserId" = 122);
+            var userExperimentsNames = _context.Experiments.
+                Where(e => _context.UserExperiments.Any(ue => ue.UserId == currUserId && ue.ExperimentId == e.ExperimentId)).
+                Select(e => new ExperimentNameViewModel { ExperimentId = e.ExperimentId, Name = e.Name }).ToList();
+
+            return View(userExperimentsNames);
         }
 
         // GET: Experiments/Details/5
