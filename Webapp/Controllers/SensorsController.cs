@@ -146,7 +146,7 @@ namespace Webapp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Проверить аргументы или открытые методы", Justification = "<Ожидание>")]
-        public async Task<IActionResult> Edit(int id, [Bind("SensorId,Name,Metadata,DataTypeId,IpAddress,Port,CommunicationProtocolId")] Sensors sensor)
+        public async Task<IActionResult> Edit(int id, [Bind("SensorId,Name,Metadata,IpAddress,Port,CommunicationProtocolId")] Sensors sensor)
         {
             if (id != sensor.SensorId)
             {

@@ -104,22 +104,29 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
-            var experiments = await _context.Experiments.FindAsync(id);
-            if (experiments == null)
+            ExperimentEditViewModel experimentVm = await _context.Experiments.Select(m =>
+            new ExperimentEditViewModel
+            {
+                ExperimentId = m.ExperimentId,
+                Name = m.Name,
+                Metadata = m.Metadata
+            }).FirstOrDefaultAsync(m => m.ExperimentId == id).ConfigureAwait(true);
+
+            if (experimentVm == null)
             {
                 return NotFound();
             }
-            return View(experiments);
+
+            return View(experimentVm);
         }
 
         // POST: Experiments/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ExperimentId,Metadata,CreatedAt,Name")] Experiments experiments)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Проверить аргументы или открытые методы", Justification = "<Ожидание>")]
+        public async Task<IActionResult> Edit(int id, [Bind("ExperimentId,Name,Metadata")] Experiments experiment)
         {
-            if (id != experiments.ExperimentId)
+            if (id != experiment.ExperimentId)
             {
                 return NotFound();
             }
@@ -128,12 +135,12 @@ namespace Webapp.Controllers
             {
                 try
                 {
-                    _context.Update(experiments);
-                    await _context.SaveChangesAsync();
+                    _context.Update(experiment);
+                    await _context.SaveChangesAsync().ConfigureAwait(true);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ExperimentsExists(experiments.ExperimentId))
+                    if (!ExperimentsExists(experiment.ExperimentId))
                     {
                         return NotFound();
                     }
@@ -144,7 +151,8 @@ namespace Webapp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(experiments);
+
+            return View(experiment);
         }
 
         // GET: Experiments/Delete/5
