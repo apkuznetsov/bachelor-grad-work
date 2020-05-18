@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using System;
@@ -170,14 +170,21 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
-            var experiments = await _context.Experiments
-                .FirstOrDefaultAsync(m => m.ExperimentId == id);
-            if (experiments == null)
+            ExperimentDeleteViewModel experimentVm = await _context.Experiments.Select(m =>
+                new ExperimentDeleteViewModel
+                {
+                    ExperimentId = m.ExperimentId,
+                    Name = m.Name,
+                    Metadata = m.Metadata,
+                    CreatedAt = m.CreatedAt
+                }).FirstOrDefaultAsync(m => m.ExperimentId == id).ConfigureAwait(true);
+
+            if (experimentVm == null)
             {
                 return NotFound();
             }
 
-            return View(experiments);
+            return View(experimentVm);
         }
 
         // POST: Experiments/Delete/5
@@ -185,9 +192,14 @@ namespace Webapp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var experiments = await _context.Experiments.FindAsync(id);
-            _context.Experiments.Remove(experiments);
-            await _context.SaveChangesAsync();
+            var userExperiment = _context.UserExperiments.Where(m => m.ExperimentId == id);
+            _context.UserExperiments.RemoveRange(userExperiment);
+            await _context.SaveChangesAsync().ConfigureAwait(true);
+
+            var experiment = await _context.Experiments.FindAsync(id).ConfigureAwait(true);
+            _context.Experiments.Remove(experiment);
+            await _context.SaveChangesAsync().ConfigureAwait(true);
+
             return RedirectToAction(nameof(Index));
         }
 
