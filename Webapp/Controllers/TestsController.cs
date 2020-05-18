@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Internal;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Webapp.Models;
 using WebappDb;
 
 namespace Webapp.Controllers
@@ -44,14 +45,17 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
-            var tests = _context.Tests.Include(t => t.Experiment);
+            var userExperimentTestsNames = _context.Tests.
+                Where(t => t.ExperimentId == id
+                && _context.UserExperiments.Any(ue => ue.UserId == GetCurrUserId() && ue.ExperimentId == t.ExperimentId)).
+                Select(t => new TestNameViewModel { TestId = t.ExperimentId, Name = t.Name }).ToList();
 
-            if (tests == null)
+            if (userExperimentTestsNames == null)
             {
                 return NotFound();
             }
 
-            return View(tests);
+            return View(userExperimentTestsNames);
         }
 
         // GET: Tests/Details/5
