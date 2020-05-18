@@ -104,12 +104,20 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
-            var experiments = await _context.Experiments.FindAsync(id);
-            if (experiments == null)
+            ExperimentEditViewModel experimentVm = await _context.Experiments.Select(m =>
+            new ExperimentEditViewModel
+            {
+                ExperimentId = m.ExperimentId,
+                Name = m.Name,
+                Metadata = m.Metadata
+            }).FirstOrDefaultAsync(m => m.ExperimentId == id).ConfigureAwait(true);
+
+            if (experimentVm == null)
             {
                 return NotFound();
             }
-            return View(experiments);
+
+            return View(experimentVm);
         }
 
         // POST: Experiments/Edit/5
