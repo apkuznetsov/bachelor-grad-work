@@ -24,7 +24,7 @@ namespace WebappDb
         public string Metadata { get; set; }
 
         [Display(Name = "Дата создания")]
-        public DateTimeOffset CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
 
         public virtual ICollection<ExperimentParams> ExperimentParams { get; set; }
         public virtual ICollection<ExperimentTags> ExperimentTags { get; set; }

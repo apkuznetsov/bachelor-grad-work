@@ -46,14 +46,21 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
-            var experiments = await _context.Experiments
-                .FirstOrDefaultAsync(m => m.ExperimentId == id);
-            if (experiments == null)
+            ExperimentDetailsViewModel experimentVm = await _context.Experiments.Select(m =>
+                new ExperimentDetailsViewModel
+                {
+                    ExperimentId = m.ExperimentId,
+                    Name = m.Name,
+                    Metadata = m.Metadata,
+                    CreatedAt = m.CreatedAt
+                }).FirstOrDefaultAsync(m => m.ExperimentId == id).ConfigureAwait(true);
+
+            if (experimentVm == null)
             {
                 return NotFound();
             }
 
-            return View(experiments);
+            return View(experimentVm);
         }
 
         // GET: Experiments/Create
@@ -75,7 +82,7 @@ namespace Webapp.Controllers
                     ExperimentId = experimentVm.ExperimentId,
                     Name = experimentVm.Name,
                     Metadata = experimentVm.Metadata,
-                    CreatedAt = DateTimeOffset.Now
+                    CreatedAt = DateTime.Now
                 };
 
                 _context.Add(experiment);
