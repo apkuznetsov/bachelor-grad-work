@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using WebappDb;
 
 namespace Webapp.Controllers
@@ -18,11 +18,40 @@ namespace Webapp.Controllers
             _context = context;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1305:Укажите IFormatProvider", Justification = "<Ожидание>")]
+        private int GetCurrUserId()
+        {
+            return Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value);
+        }
+
         // GET: Tests
         public async Task<IActionResult> Index()
         {
             var webappdbContext = _context.Tests.Include(t => t.Experiment);
             return View(await webappdbContext.ToListAsync());
+        }
+
+        // GET: Tests/Experiment/5
+        public IActionResult Experiment(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            if (!_context.UserExperiments.Any(ue => ue.UserId == GetCurrUserId() && ue.ExperimentId == id))
+            {
+                return NotFound();
+            }
+
+            var tests = _context.Tests.Include(t => t.Experiment);
+
+            if (tests == null)
+            {
+                return NotFound();
+            }
+
+            return View(tests);
         }
 
         // GET: Tests/Details/5
