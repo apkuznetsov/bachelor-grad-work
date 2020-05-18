@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using System;
@@ -170,12 +170,13 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
-            ExperimentDetailsViewModel experimentVm = await _context.Experiments.Select(m =>
-                new ExperimentDetailsViewModel
+            ExperimentDeleteViewModel experimentVm = await _context.Experiments.Select(m =>
+                new ExperimentDeleteViewModel
                 {
                     ExperimentId = m.ExperimentId,
                     Name = m.Name,
-                    Metadata = m.Metadata
+                    Metadata = m.Metadata,
+                    CreatedAt = m.CreatedAt
                 }).FirstOrDefaultAsync(m => m.ExperimentId == id).ConfigureAwait(true);
 
             if (experimentVm == null)
