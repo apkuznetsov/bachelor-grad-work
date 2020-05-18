@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using System;
@@ -79,6 +79,15 @@ namespace Webapp.Controllers
                 };
 
                 _context.Add(experiment);
+                await _context.SaveChangesAsync().ConfigureAwait(true);
+
+                UserExperiments userExperiment = new UserExperiments
+                {
+                    UserId = GetCurrUserId(),
+                    ExperimentId = experiment.ExperimentId
+                };
+
+                _context.Add(userExperiment);
                 await _context.SaveChangesAsync().ConfigureAwait(true);
 
                 return RedirectToAction(nameof(Index));
