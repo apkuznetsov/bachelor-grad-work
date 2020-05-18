@@ -82,7 +82,7 @@ namespace Webapp.Controllers
                     ExperimentId = experimentVm.ExperimentId,
                     Name = experimentVm.Name,
                     Metadata = experimentVm.Metadata,
-                    CreatedAt = DateTimeOffset.Now
+                    CreatedAt = DateTime.Now
                 };
 
                 _context.Add(experiment);

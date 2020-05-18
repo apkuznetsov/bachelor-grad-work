@@ -14,6 +14,6 @@ namespace Webapp.Models.Experiments
         public string Metadata { get; set; }
 
         [Display(Name = "Дата создания")]
-        public DateTimeOffset CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }

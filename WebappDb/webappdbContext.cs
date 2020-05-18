@@ -147,7 +147,7 @@ namespace WebappDb
                     .HasName("constraint_unique_experiment_name")
                     .IsUnique();
 
-                entity.Property(e => e.CreatedAt).HasColumnType("time with time zone");
+                entity.Property(e => e.CreatedAt).HasColumnType("timestamp with time zone");
 
                 entity.Property(e => e.Metadata).IsRequired();
 
