@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using System;
@@ -24,14 +24,18 @@ namespace Webapp.Controllers
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1305:Укажите IFormatProvider", Justification = "<Ожидание>")]
         public IActionResult Index()
         {
-            var currUserId = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value);
-
             // SELECT "ExperimentId", "Name" FROM experiments WHERE "ExperimentId" = Any (SELECT "ExperimentId" FROM user_experiments WHERE "UserId" = 122);
             var userExperimentsNames = _context.Experiments.
-                Where(e => _context.UserExperiments.Any(ue => ue.UserId == currUserId && ue.ExperimentId == e.ExperimentId)).
+                Where(e => _context.UserExperiments.Any(ue => ue.UserId == GetCurrUserId() && ue.ExperimentId == e.ExperimentId)).
                 Select(e => new ExperimentNameViewModel { ExperimentId = e.ExperimentId, Name = e.Name }).ToList();
 
             return View(userExperimentsNames);
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1305:Укажите IFormatProvider", Justification = "<Ожидание>")]
+        private int GetCurrUserId()
+        {
+            return Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value);
         }
 
         // GET: Experiments/Details/5
