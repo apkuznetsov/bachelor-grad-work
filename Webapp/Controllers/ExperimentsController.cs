@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Webapp.Models;
+using Webapp.Models.Experiments;
 using WebappDb;
 
 namespace Webapp.Controllers
@@ -21,7 +22,7 @@ namespace Webapp.Controllers
 
         // GET: Experiments
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1305:Укажите IFormatProvider", Justification = "<Ожидание>")]
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             var currUserId = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value);
 
@@ -58,19 +59,28 @@ namespace Webapp.Controllers
         }
 
         // POST: Experiments/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ExperimentId,Metadata,CreatedAt,Name")] Experiments experiments)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Проверить аргументы или открытые методы", Justification = "<Ожидание>")]
+        public async Task<IActionResult> Create([Bind("ExperimentId,Name,Metadata")] ExperimentCreateViewModel experimentVm)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(experiments);
-                await _context.SaveChangesAsync();
+                Experiments experiment = new Experiments
+                {
+                    ExperimentId = experimentVm.ExperimentId,
+                    Name = experimentVm.Name,
+                    Metadata = experimentVm.Metadata,
+                    CreatedAt = DateTimeOffset.Now
+                };
+
+                _context.Add(experiment);
+                await _context.SaveChangesAsync().ConfigureAwait(true);
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(experiments);
+
+            return View(experimentVm);
         }
 
         // GET: Experiments/Edit/5
