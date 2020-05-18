@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebappDb
 {
@@ -13,15 +14,26 @@ namespace WebappDb
         }
 
         public int TestId { get; set; }
-        public string Metadata { get; set; }
+
         public int ExperimentId { get; set; }
-        public DateTime StartedTime { get; set; }
-        public DateTime? EndedTime { get; set; }
+
+        [Display(Name = "Название")]
         public string Name { get; set; }
 
+        [Display(Name = "Описание")]
+        public string Metadata { get; set; }
+
+        [Display(Name = "Время начала")]
+        public DateTime StartedTime { get; set; }
+
+        [Display(Name = "Время завершения")]
+        public DateTime? EndedTime { get; set; }
+
+
+
         public virtual Experiments Experiment { get; set; }
-        public virtual ICollection<ProcessingTests> ProcessingTests { get; set; }
         public virtual ICollection<TestParams> TestParams { get; set; }
         public virtual ICollection<TestStorageFiles> TestStorageFiles { get; set; }
+        public virtual ICollection<ProcessingTests> ProcessingTests { get; set; }
     }
 }
