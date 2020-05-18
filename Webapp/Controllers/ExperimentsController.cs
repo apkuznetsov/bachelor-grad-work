@@ -170,14 +170,20 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
-            var experiments = await _context.Experiments
-                .FirstOrDefaultAsync(m => m.ExperimentId == id);
-            if (experiments == null)
+            ExperimentDetailsViewModel experimentVm = await _context.Experiments.Select(m =>
+                new ExperimentDetailsViewModel
+                {
+                    ExperimentId = m.ExperimentId,
+                    Name = m.Name,
+                    Metadata = m.Metadata
+                }).FirstOrDefaultAsync(m => m.ExperimentId == id).ConfigureAwait(true);
+
+            if (experimentVm == null)
             {
                 return NotFound();
             }
 
-            return View(experiments);
+            return View(experimentVm);
         }
 
         // POST: Experiments/Delete/5
@@ -185,9 +191,10 @@ namespace Webapp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var experiments = await _context.Experiments.FindAsync(id);
+            var experiments = await _context.Experiments.FindAsync(id).ConfigureAwait(true);
             _context.Experiments.Remove(experiments);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync().ConfigureAwait(true);
+
             return RedirectToAction(nameof(Index));
         }
 
