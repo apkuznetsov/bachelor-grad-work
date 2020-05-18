@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebappDb
 {
@@ -15,13 +16,19 @@ namespace WebappDb
         }
 
         public int ExperimentId { get; set; }
-        public string Metadata { get; set; }
-        public DateTimeOffset CreatedAt { get; set; }
+
+        [Display(Name = "Название")]
         public string Name { get; set; }
 
+        [Display(Name = "Описание")]
+        public string Metadata { get; set; }
+
+        [Display(Name = "Дата создания")]
+        public DateTimeOffset CreatedAt { get; set; }
+
         public virtual ICollection<ExperimentParams> ExperimentParams { get; set; }
-        public virtual ICollection<ExperimentSensors> ExperimentSensors { get; set; }
         public virtual ICollection<ExperimentTags> ExperimentTags { get; set; }
+        public virtual ICollection<ExperimentSensors> ExperimentSensors { get; set; }
         public virtual ICollection<Tests> Tests { get; set; }
         public virtual ICollection<UserExperiments> UserExperiments { get; set; }
     }

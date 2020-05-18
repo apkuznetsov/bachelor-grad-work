@@ -1,7 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Webapp.Models;
+using Webapp.Models.Experiments;
 using WebappDb;
 
 namespace Webapp.Controllers
@@ -15,10 +19,23 @@ namespace Webapp.Controllers
             _context = context;
         }
 
+
         // GET: Experiments
-        public async Task<IActionResult> Index()
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1305:Укажите IFormatProvider", Justification = "<Ожидание>")]
+        public IActionResult Index()
         {
-            return View(await _context.Experiments.ToListAsync());
+            // SELECT "ExperimentId", "Name" FROM experiments WHERE "ExperimentId" = Any (SELECT "ExperimentId" FROM user_experiments WHERE "UserId" = 122);
+            var userExperimentsNames = _context.Experiments.
+                Where(e => _context.UserExperiments.Any(ue => ue.UserId == GetCurrUserId() && ue.ExperimentId == e.ExperimentId)).
+                Select(e => new ExperimentNameViewModel { ExperimentId = e.ExperimentId, Name = e.Name }).ToList();
+
+            return View(userExperimentsNames);
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1305:Укажите IFormatProvider", Justification = "<Ожидание>")]
+        private int GetCurrUserId()
+        {
+            return Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value);
         }
 
         // GET: Experiments/Details/5
@@ -46,19 +63,37 @@ namespace Webapp.Controllers
         }
 
         // POST: Experiments/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ExperimentId,Metadata,CreatedAt,Name")] Experiments experiments)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Проверить аргументы или открытые методы", Justification = "<Ожидание>")]
+        public async Task<IActionResult> Create([Bind("ExperimentId,Name,Metadata")] ExperimentCreateViewModel experimentVm)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(experiments);
-                await _context.SaveChangesAsync();
+                Experiments experiment = new Experiments
+                {
+                    ExperimentId = experimentVm.ExperimentId,
+                    Name = experimentVm.Name,
+                    Metadata = experimentVm.Metadata,
+                    CreatedAt = DateTimeOffset.Now
+                };
+
+                _context.Add(experiment);
+                await _context.SaveChangesAsync().ConfigureAwait(true);
+
+                UserExperiments userExperiment = new UserExperiments
+                {
+                    UserId = GetCurrUserId(),
+                    ExperimentId = experiment.ExperimentId
+                };
+
+                _context.Add(userExperiment);
+                await _context.SaveChangesAsync().ConfigureAwait(true);
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(experiments);
+
+            return View(experimentVm);
         }
 
         // GET: Experiments/Edit/5
