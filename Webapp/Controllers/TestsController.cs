@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
@@ -18,12 +18,6 @@ namespace Webapp.Controllers
         public TestsController(webappdbContext context)
         {
             _context = context;
-        }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1305:Укажите IFormatProvider", Justification = "<Ожидание>")]
-        private int GetCurrUserId()
-        {
-            return Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value);
         }
 
         // GET: Tests
@@ -232,7 +226,13 @@ namespace Webapp.Controllers
 
         private bool TestsExists(int id)
         {
-            return _context.Tests.Any(e => e.TestId == id);
+            return _context.Tests.Any(t => t.TestId == id);
         }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1305:Укажите IFormatProvider", Justification = "<Ожидание>")]
+        private int GetCurrUserId()
+        {
+            return Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value);
     }
+
 }
