@@ -11,5 +11,10 @@ namespace Webapp.Models.Experiments
 
         [Display(Name = "Описание")]
         public string Metadata { get; set; }
+
+        public int ExperimentSensorId { get; set; }
+
+        [Display(Name = "Датчик")]
+        public string ExperimentSensorName { get; set; }
     }
 }

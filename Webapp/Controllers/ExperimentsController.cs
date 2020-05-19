@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using System;
@@ -65,6 +66,11 @@ namespace Webapp.Controllers
         // GET: Experiments/Create
         public IActionResult Create()
         {
+            ViewData["SernsorId"] = new SelectList(
+                _context.Sensors,
+                "SernsorId",
+                "Name");
+
             return View();
         }
 
@@ -97,6 +103,12 @@ namespace Webapp.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewData["SernsorId"] = new SelectList(
+                _context.Sensors,
+                "SernsorId",
+                "Name",
+                experimentVm.ExperimentSensorId);
 
             return View(experimentVm);
         }
