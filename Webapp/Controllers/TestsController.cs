@@ -91,9 +91,15 @@ namespace Webapp.Controllers
         }
 
         // GET: Tests/Create/ExperimentId
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1305:Укажите IFormatProvider", Justification = "<Ожидание>")]
         public IActionResult Create(int? id)
         {
             if (id == null)
+            {
+                return NotFound();
+            }
+
+            if (!DoesUserHaveAccess(Convert.ToInt32(id)))
             {
                 return NotFound();
             }
@@ -121,6 +127,11 @@ namespace Webapp.Controllers
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Проверить аргументы или открытые методы", Justification = "<Ожидание>")]
         public async Task<IActionResult> Create([Bind("Name,Metadata,ExperimentId,ExperimentName")] TestCreateViewModel testVm)
         {
+            if (!DoesUserHaveAccess(testVm.ExperimentId))
+            {
+                return NotFound();
+            }
+
             if (ModelState.IsValid)
             {
                 Tests test = new Tests
