@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using Webapp.Models;
+using Webapp.Models.Sensors;
 using WebappDb;
 
 namespace Webapp.Controllers
@@ -187,8 +188,8 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
-            SensorDetailsViewModel sensorVm = await _context.Sensors.Select(m =>
-                new SensorDetailsViewModel
+            SensorDeleteViewModel sensorVm = await _context.Sensors.Select(m =>
+                new SensorDeleteViewModel
                 {
                     SensorId = m.SensorId,
                     Name = m.Name,
