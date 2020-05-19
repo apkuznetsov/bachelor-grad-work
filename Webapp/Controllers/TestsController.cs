@@ -71,8 +71,9 @@ namespace Webapp.Controllers
             }
 
             var testVm = await _context.Tests.
-                Select(m => 
-                new TestDetailsViewModel { 
+                Select(m =>
+                new TestDetailsViewModel
+                {
                     TestId = m.TestId,
                     Name = m.Name,
                     Metadata = m.Metadata,
@@ -83,6 +84,13 @@ namespace Webapp.Controllers
                 FirstOrDefaultAsync(m => m.TestId == id).ConfigureAwait(true);
 
             if (testVm == null)
+            {
+                return NotFound();
+            }
+
+            bool doesUserHaveAccess = _context.UserExperiments.Any(ue => ue.UserId == GetCurrUserId() && ue.ExperimentId == testVm.ExperimentId);
+
+            if (!doesUserHaveAccess)
             {
                 return NotFound();
             }
