@@ -55,6 +55,9 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
+            ViewBag.ExperimentName = _context.Experiments.FirstOrDefault(e => e.ExperimentId == id).Name;
+            ViewBag.ExperimentId = id;
+
             return View(userExperimentTestsNames);
         }
 
