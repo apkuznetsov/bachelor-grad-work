@@ -19,7 +19,6 @@ namespace Webapp.Controllers
             _context = context;
         }
 
-
         // GET: Experiments
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1305:Укажите IFormatProvider", Justification = "<Ожидание>")]
         public IActionResult Index()
@@ -79,7 +78,6 @@ namespace Webapp.Controllers
             {
                 Experiments experiment = new Experiments
                 {
-                    ExperimentId = experimentVm.ExperimentId,
                     Name = experimentVm.Name,
                     Metadata = experimentVm.Metadata,
                     CreatedAt = DateTime.Now

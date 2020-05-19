@@ -15,10 +15,14 @@
     </a>
 </p>
 <hr />
-<p>
-    <a asp-action="Create">Создать новое измерение</a>
-</p>
 
+<p>
+    <a asp-controller="Tests"
+       asp-action="Create"
+       asp-route-id="@ViewBag.ExperimentId">
+        Провести измерение
+    </a>
+</p>
 <table class="table">
     <tbody>
         @foreach (var item in Model)
