@@ -124,21 +124,27 @@ namespace Webapp.Controllers
             return View(testVm);
         }
 
-        // POST: Tests/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TestId,Metadata,ExperimentId,StartedTime,EndedTime,Name")] Tests tests)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Проверить аргументы или открытые методы", Justification = "<Ожидание>")]
+        public async Task<IActionResult> Create([Bind("Name,Metadata,ExperimentId,ExperimentName")] TestCreateViewModel testVm)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(tests);
-                await _context.SaveChangesAsync();
+                Tests test = new Tests
+                {
+                    Name = testVm.Name,
+                    Metadata = testVm.Metadata,
+                    ExperimentId = testVm.ExperimentId,
+                    StartedTime = DateTime.Now
+                };
+                _context.Add(test);
+                await _context.SaveChangesAsync().ConfigureAwait(true);
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ExperimentId"] = new SelectList(_context.Experiments, "ExperimentId", "Metadata", tests.ExperimentId);
-            return View(tests);
+
+            return View(testVm);
         }
 
         // GET: Tests/Edit/5
