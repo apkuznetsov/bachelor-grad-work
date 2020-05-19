@@ -66,9 +66,9 @@ namespace Webapp.Controllers
         // GET: Experiments/Create
         public IActionResult Create()
         {
-            ViewData["SernsorId"] = new SelectList(
+            ViewData["ExperimentSensorId"] = new SelectList(
                 _context.Sensors,
-                "SernsorId",
+                "SensorId",
                 "Name");
 
             return View();
@@ -104,9 +104,9 @@ namespace Webapp.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["SernsorId"] = new SelectList(
+            ViewData["ExperimentSensorId"] = new SelectList(
                 _context.Sensors,
-                "SernsorId",
+                "SensorId",
                 "Name",
                 experimentVm.ExperimentSensorId);
 
