@@ -6,6 +6,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Webapp.Models;
+using Webapp.Models.Tests;
 using WebappDb;
 
 namespace Webapp.Controllers
@@ -48,7 +49,7 @@ namespace Webapp.Controllers
             var userExperimentTestsNames = _context.Tests.
                 Where(t => t.ExperimentId == id
                 && _context.UserExperiments.Any(ue => ue.UserId == GetCurrUserId() && ue.ExperimentId == t.ExperimentId)).
-                Select(t => new TestNameViewModel { TestId = t.ExperimentId, Name = t.Name }).ToList();
+                Select(t => new TestNameViewModel { TestId = t.TestId, Name = t.Name }).ToList();
 
             if (userExperimentTestsNames == null)
             {
@@ -69,15 +70,33 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
-            var tests = await _context.Tests
-                .Include(t => t.Experiment)
-                .FirstOrDefaultAsync(m => m.TestId == id);
-            if (tests == null)
+            var testVm = await _context.Tests.
+                Select(m =>
+                new TestDetailsViewModel
+                {
+                    TestId = m.TestId,
+                    Name = m.Name,
+                    Metadata = m.Metadata,
+                    StartedTime = m.StartedTime,
+                    EndedTime = m.EndedTime,
+                    ExperimentId = m.ExperimentId
+                }).
+                FirstOrDefaultAsync(m => m.TestId == id).ConfigureAwait(true);
+
+            if (testVm == null)
             {
                 return NotFound();
             }
 
-            return View(tests);
+            bool doesUserHaveAccess = _context.UserExperiments.Any(ue => ue.UserId == GetCurrUserId() && ue.ExperimentId == testVm.ExperimentId);
+            if (!doesUserHaveAccess)
+            {
+                return NotFound();
+            }
+
+
+            testVm.ExperimentName = _context.Experiments.FirstOrDefault(m => m.ExperimentId == testVm.ExperimentId).Name;
+            return View(testVm);
         }
 
         // GET: Tests/Create
