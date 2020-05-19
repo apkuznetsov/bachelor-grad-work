@@ -6,6 +6,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Webapp.Models;
+using Webapp.Models.Experiments;
 using WebappDb;
 
 namespace Webapp.Controllers
@@ -69,15 +70,24 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
-            var tests = await _context.Tests
-                .Include(t => t.Experiment)
-                .FirstOrDefaultAsync(m => m.TestId == id);
-            if (tests == null)
+            var testVm = await _context.Tests.
+                Select(m => 
+                new TestDetailsViewModel { 
+                    TestId = m.TestId,
+                    Name = m.Name,
+                    Metadata = m.Metadata,
+                    StartedTime = m.StartedTime,
+                    EndedTime = m.EndedTime,
+                    ExperimentId = m.ExperimentId
+                }).
+                FirstOrDefaultAsync(m => m.TestId == id).ConfigureAwait(true);
+
+            if (testVm == null)
             {
                 return NotFound();
             }
 
-            return View(tests);
+            return View(testVm);
         }
 
         // GET: Tests/Create
