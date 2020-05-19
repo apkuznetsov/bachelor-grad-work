@@ -263,11 +263,13 @@ namespace Webapp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var tests = await _context.Tests.FindAsync(id).ConfigureAwait(true);
-            _context.Tests.Remove(tests);
+            var test = await _context.Tests.FindAsync(id).ConfigureAwait(true);
+            var experimentId = test.ExperimentId;
+
+            _context.Tests.Remove(test);
             await _context.SaveChangesAsync().ConfigureAwait(true);
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Experiment", new { id = experimentId });
         }
 
         private bool TestsExists(int id)
