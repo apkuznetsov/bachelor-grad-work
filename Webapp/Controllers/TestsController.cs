@@ -27,10 +27,9 @@ namespace Webapp.Controllers
         }
 
         // GET: Tests
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var webappdbContext = _context.Tests.Include(t => t.Experiment);
-            return View(await webappdbContext.ToListAsync());
+            return RedirectToAction("Index", "Experiments");
         }
 
         // GET: Tests/Experiment/5
