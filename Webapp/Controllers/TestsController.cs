@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
@@ -6,7 +6,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Webapp.Models;
-using Webapp.Models.Experiments;
+using Webapp.Models.Tests;
 using WebappDb;
 
 namespace Webapp.Controllers
@@ -49,7 +49,7 @@ namespace Webapp.Controllers
             var userExperimentTestsNames = _context.Tests.
                 Where(t => t.ExperimentId == id
                 && _context.UserExperiments.Any(ue => ue.UserId == GetCurrUserId() && ue.ExperimentId == t.ExperimentId)).
-                Select(t => new TestNameViewModel { TestId = t.ExperimentId, Name = t.Name }).ToList();
+                Select(t => new TestNameViewModel { TestId = t.TestId, Name = t.Name }).ToList();
 
             if (userExperimentTestsNames == null)
             {
