@@ -1,4 +1,4 @@
-﻿@model Webapp.Models.SensorDetailsViewModel
+﻿@model Webapp.Models.Sensors.SensorDeleteViewModel
 
 @{
     ViewData["Title"] = "Удалить датчик";
@@ -56,6 +56,7 @@
     <form asp-action="Delete">
         <input type="hidden" asp-for="SensorId" />
         <input type="submit" value="Удалить" class="btn btn-danger" /> |
+
         <a asp-action="Index">Вернуться к списку датчиков</a>
     </form>
 </div>

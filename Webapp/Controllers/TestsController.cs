@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using System;
@@ -232,15 +231,31 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
-            var tests = await _context.Tests
-                .Include(t => t.Experiment)
-                .FirstOrDefaultAsync(m => m.TestId == id);
-            if (tests == null)
+            var testVm = await _context.Tests.
+                Select(m =>
+                new TestDeleteViewModel
+                {
+                    TestId = m.TestId,
+                    Name = m.Name,
+                    Metadata = m.Metadata,
+                    StartedTime = m.StartedTime,
+                    EndedTime = m.EndedTime,
+                    ExperimentId = m.ExperimentId
+                }).
+                FirstOrDefaultAsync(m => m.TestId == id).ConfigureAwait(true);
+
+            if (testVm == null)
             {
                 return NotFound();
             }
 
-            return View(tests);
+            if (!DoesUserHaveAccess(testVm.ExperimentId))
+            {
+                return NotFound();
+            }
+
+            testVm.ExperimentName = _context.Experiments.FirstOrDefault(m => m.ExperimentId == testVm.ExperimentId).Name;
+            return View(testVm);
         }
 
         // POST: Tests/Delete/5
@@ -248,10 +263,13 @@ namespace Webapp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var tests = await _context.Tests.FindAsync(id);
-            _context.Tests.Remove(tests);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            var test = await _context.Tests.FindAsync(id).ConfigureAwait(true);
+            var experimentId = test.ExperimentId;
+
+            _context.Tests.Remove(test);
+            await _context.SaveChangesAsync().ConfigureAwait(true);
+
+            return RedirectToAction("Experiment", new { id = experimentId });
         }
 
         private bool TestsExists(int id)
