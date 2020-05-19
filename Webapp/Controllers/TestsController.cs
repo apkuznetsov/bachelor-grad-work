@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
@@ -98,22 +98,22 @@ namespace Webapp.Controllers
             return View(testVm);
         }
 
-        // GET: Tests/Create
+        // GET: Tests/Create/ExperimentId
         public IActionResult Create(int? id)
         {
             if (id == null)
             {
                 return NotFound();
-        }
+            }
 
             var experimentVm = _context.Experiments.
                 Select(m =>
-                new ExperimentNameViewModel 
+                new ExperimentNameViewModel
                 {
                     ExperimentId = m.ExperimentId,
                     Name = m.Name
                 }).
-                FirstOrDefault(M => M.ExperimentId == id);
+                FirstOrDefault(m => m.ExperimentId == id);
 
             TestCreateViewModel testVm = new TestCreateViewModel
             {
