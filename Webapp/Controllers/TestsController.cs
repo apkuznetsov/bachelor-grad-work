@@ -81,12 +81,10 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
-            bool doesUserHaveAccess = _context.UserExperiments.Any(ue => ue.UserId == GetCurrUserId() && ue.ExperimentId == testVm.ExperimentId);
-            if (!doesUserHaveAccess)
+            if (!DoesUserHaveAccess(testVm.ExperimentId))
             {
                 return NotFound();
             }
-
 
             testVm.ExperimentName = _context.Experiments.FirstOrDefault(m => m.ExperimentId == testVm.ExperimentId).Name;
             return View(testVm);
@@ -235,4 +233,9 @@ namespace Webapp.Controllers
             return Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value);
     }
 
+        private bool DoesUserHaveAccess(int experimentId)
+        {
+            return _context.UserExperiments.Any(ue => ue.UserId == GetCurrUserId() && ue.ExperimentId == experimentId);
+}
+    }
 }
