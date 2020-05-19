@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Webapp.Models.Experiments
+namespace Webapp.Models.Tests
 {
     public class TestDetailsViewModel
     {
@@ -22,6 +22,6 @@ namespace Webapp.Models.Experiments
         public int ExperimentId { get; set; }
 
         [Display(Name = "Эксперимент")]
-        public int ExperimentName { get; set; }
+        public string ExperimentName { get; set; }
     }
 }

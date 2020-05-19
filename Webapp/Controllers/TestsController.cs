@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
@@ -89,12 +89,13 @@ namespace Webapp.Controllers
             }
 
             bool doesUserHaveAccess = _context.UserExperiments.Any(ue => ue.UserId == GetCurrUserId() && ue.ExperimentId == testVm.ExperimentId);
-
             if (!doesUserHaveAccess)
             {
                 return NotFound();
             }
 
+
+            testVm.ExperimentName = _context.Experiments.FirstOrDefault(m => m.ExperimentId == testVm.ExperimentId).Name;
             return View(testVm);
         }
 
