@@ -20,6 +20,8 @@
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
 
+            <input type="hidden" asp-for="ExperimentId" />
+
             <div class="form-group">
                 <label asp-for="ExperimentName" class="control-label"></label>
                 <a asp-controller="Experiments"
@@ -37,12 +39,12 @@
 
             <div class="form-group">
                 <label asp-for="StartedTime" class="control-label"></label>
-                @Html.DisplayNameFor(model => model.StartedTime)
+                @Html.DisplayFor(model => model.StartedTime)
             </div>
 
             <div class="form-group">
                 <label asp-for="EndedTime" class="control-label"></label>
-                @Html.DisplayNameFor(model => model.EndedTime)
+                @Html.DisplayFor(model => model.EndedTime)
             </div>
 
             <div class="form-group">

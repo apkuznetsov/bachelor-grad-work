@@ -167,7 +167,7 @@ namespace Webapp.Controllers
                 StartedTime = m.StartedTime,
                 EndedTime = m.EndedTime,
                 ExperimentId = m.ExperimentId
-            }).FirstOrDefaultAsync(m => m.ExperimentId == id).ConfigureAwait(true);
+            }).FirstOrDefaultAsync(m => m.TestId == id).ConfigureAwait(true);
 
             if (testVm == null)
             {
@@ -187,14 +187,14 @@ namespace Webapp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Проверить аргументы или открытые методы", Justification = "<Ожидание>")]
-        public async Task<IActionResult> Edit(int id, [Bind("TestId,Name,Metadata")] Tests test)
+        public async Task<IActionResult> Edit(int id, [Bind("TestId,Name,Metadata,ExperimentId")] Tests test)
         {
             if (id != test.TestId)
             {
                 return NotFound();
             }
 
-            if (!DoesUserHaveAccess(test.TestId))
+            if (!DoesUserHaveAccess(test.ExperimentId))
             {
                 return NotFound();
             }
@@ -217,6 +217,7 @@ namespace Webapp.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
 

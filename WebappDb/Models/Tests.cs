@@ -15,8 +15,6 @@ namespace WebappDb
 
         public int TestId { get; set; }
 
-        public int ExperimentId { get; set; }
-
         [Display(Name = "Название")]
         public string Name { get; set; }
 
@@ -29,7 +27,7 @@ namespace WebappDb
         [Display(Name = "Время завершения")]
         public DateTime? EndedTime { get; set; }
 
-
+        public int ExperimentId { get; set; }
 
         public virtual Experiments Experiment { get; set; }
         public virtual ICollection<TestParams> TestParams { get; set; }
