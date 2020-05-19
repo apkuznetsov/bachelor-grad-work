@@ -184,13 +184,17 @@ namespace Webapp.Controllers
         }
 
         // POST: Tests/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("TestId,Metadata,ExperimentId,StartedTime,EndedTime,Name")] Tests tests)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Проверить аргументы или открытые методы", Justification = "<Ожидание>")]
+        public async Task<IActionResult> Edit(int id, [Bind("TestId,Name,Metadata")] Tests test)
         {
-            if (id != tests.TestId)
+            if (id != test.TestId)
+            {
+                return NotFound();
+            }
+
+            if (!DoesUserHaveAccess(test.TestId))
             {
                 return NotFound();
             }
@@ -199,12 +203,12 @@ namespace Webapp.Controllers
             {
                 try
                 {
-                    _context.Update(tests);
-                    await _context.SaveChangesAsync();
+                    _context.Update(test);
+                    await _context.SaveChangesAsync().ConfigureAwait(true);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TestsExists(tests.TestId))
+                    if (!TestsExists(test.TestId))
                     {
                         return NotFound();
                     }
@@ -215,8 +219,8 @@ namespace Webapp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ExperimentId"] = new SelectList(_context.Experiments, "ExperimentId", "Metadata", tests.ExperimentId);
-            return View(tests);
+
+            return View(test);
         }
 
         // GET: Tests/Delete/5
