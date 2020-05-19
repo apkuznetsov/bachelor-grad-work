@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
@@ -158,13 +158,29 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
-            var tests = await _context.Tests.FindAsync(id);
-            if (tests == null)
+            TestEditViewModel testVm = await _context.Tests.Select(m =>
+            new TestEditViewModel
+            {
+                TestId = m.TestId,
+                Name = m.Name,
+                Metadata = m.Metadata,
+                StartedTime = m.StartedTime,
+                EndedTime = m.EndedTime,
+                ExperimentId = m.ExperimentId
+            }).FirstOrDefaultAsync(m => m.ExperimentId == id).ConfigureAwait(true);
+
+            if (testVm == null)
             {
                 return NotFound();
             }
-            ViewData["ExperimentId"] = new SelectList(_context.Experiments, "ExperimentId", "Metadata", tests.ExperimentId);
-            return View(tests);
+
+            if (!DoesUserHaveAccess(testVm.ExperimentId))
+            {
+                return NotFound();
+            }
+
+            testVm.ExperimentName = _context.Experiments.FirstOrDefault(m => m.ExperimentId == testVm.ExperimentId).Name;
+            return View(testVm);
         }
 
         // POST: Tests/Edit/5
@@ -242,11 +258,11 @@ namespace Webapp.Controllers
         private int GetCurrUserId()
         {
             return Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value);
-    }
+        }
 
         private bool DoesUserHaveAccess(int experimentId)
         {
             return _context.UserExperiments.Any(ue => ue.UserId == GetCurrUserId() && ue.ExperimentId == experimentId);
-}
+        }
     }
 }
