@@ -1,52 +1,69 @@
-﻿@model WebappDb.Tests
+﻿@model Webapp.Models.Tests.TestEditViewModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Редактировать измерение";
 }
 
-<h1>Edit</h1>
-
-<h4>Tests</h4>
+<h4>Редактировать измерение</h4>
 <hr />
+
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <input type="hidden" asp-for="TestId" />
-            <div class="form-group">
-                <label asp-for="Metadata" class="control-label"></label>
-                <input asp-for="Metadata" class="form-control" />
-                <span asp-validation-for="Metadata" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ExperimentId" class="control-label"></label>
-                <select asp-for="ExperimentId" class="form-control" asp-items="ViewBag.ExperimentId"></select>
-                <span asp-validation-for="ExperimentId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="StartedTime" class="control-label"></label>
-                <input asp-for="StartedTime" class="form-control" />
-                <span asp-validation-for="StartedTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EndedTime" class="control-label"></label>
-                <input asp-for="EndedTime" class="form-control" />
-                <span asp-validation-for="EndedTime" class="text-danger"></span>
-            </div>
+
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
+
+            <input type="hidden" asp-for="ExperimentId" />
+
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <label asp-for="ExperimentName" class="control-label"></label>
+                <a asp-controller="Experiments"
+                   asp-action="Details"
+                   asp-route-id="@Model.ExperimentId">
+                    @Html.DisplayFor(model => model.ExperimentName)
+                </a>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Metadata" class="control-label"></label>
+                <input asp-for="Metadata" class="form-control" />
+                <span asp-validation-for="Metadata" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="StartedTime" class="control-label"></label>
+                @Html.DisplayFor(model => model.StartedTime)
+            </div>
+
+            <div class="form-group">
+                <label asp-for="EndedTime" class="control-label"></label>
+                @Html.DisplayFor(model => model.EndedTime)
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Сохранить" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-controller="Tests"
+       asp-action="Delete"
+       asp-route-id="@Model.TestId">Удалить</a> |
+
+    <a asp-controller="Tests"
+       asp-action="Experiment"
+       asp-route-id="@Model.ExperimentId">
+        Вернуться к списку измерений эксперимента
+    </a>
 </div>
 
 @section Scripts {

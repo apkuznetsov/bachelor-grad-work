@@ -20,12 +20,6 @@ namespace Webapp.Controllers
             _context = context;
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1305:Укажите IFormatProvider", Justification = "<Ожидание>")]
-        private int GetCurrUserId()
-        {
-            return Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value);
-        }
-
         // GET: Tests
         public IActionResult Index()
         {
@@ -87,21 +81,25 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
-            bool doesUserHaveAccess = _context.UserExperiments.Any(ue => ue.UserId == GetCurrUserId() && ue.ExperimentId == testVm.ExperimentId);
-            if (!doesUserHaveAccess)
+            if (!DoesUserHaveAccess(testVm.ExperimentId))
             {
                 return NotFound();
             }
-
 
             testVm.ExperimentName = _context.Experiments.FirstOrDefault(m => m.ExperimentId == testVm.ExperimentId).Name;
             return View(testVm);
         }
 
         // GET: Tests/Create/ExperimentId
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1305:Укажите IFormatProvider", Justification = "<Ожидание>")]
         public IActionResult Create(int? id)
         {
             if (id == null)
+            {
+                return NotFound();
+            }
+
+            if (!DoesUserHaveAccess(Convert.ToInt32(id)))
             {
                 return NotFound();
             }
@@ -129,6 +127,11 @@ namespace Webapp.Controllers
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Проверить аргументы или открытые методы", Justification = "<Ожидание>")]
         public async Task<IActionResult> Create([Bind("Name,Metadata,ExperimentId,ExperimentName")] TestCreateViewModel testVm)
         {
+            if (!DoesUserHaveAccess(testVm.ExperimentId))
+            {
+                return NotFound();
+            }
+
             if (ModelState.IsValid)
             {
                 Tests test = new Tests
@@ -155,23 +158,43 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
-            var tests = await _context.Tests.FindAsync(id);
-            if (tests == null)
+            TestEditViewModel testVm = await _context.Tests.Select(m =>
+            new TestEditViewModel
+            {
+                TestId = m.TestId,
+                Name = m.Name,
+                Metadata = m.Metadata,
+                StartedTime = m.StartedTime,
+                EndedTime = m.EndedTime,
+                ExperimentId = m.ExperimentId
+            }).FirstOrDefaultAsync(m => m.TestId == id).ConfigureAwait(true);
+
+            if (testVm == null)
             {
                 return NotFound();
             }
-            ViewData["ExperimentId"] = new SelectList(_context.Experiments, "ExperimentId", "Metadata", tests.ExperimentId);
-            return View(tests);
+
+            if (!DoesUserHaveAccess(testVm.ExperimentId))
+            {
+                return NotFound();
+            }
+
+            testVm.ExperimentName = _context.Experiments.FirstOrDefault(m => m.ExperimentId == testVm.ExperimentId).Name;
+            return View(testVm);
         }
 
         // POST: Tests/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("TestId,Metadata,ExperimentId,StartedTime,EndedTime,Name")] Tests tests)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Проверить аргументы или открытые методы", Justification = "<Ожидание>")]
+        public async Task<IActionResult> Edit(int id, [Bind("TestId,Name,Metadata,ExperimentId")] Tests test)
         {
-            if (id != tests.TestId)
+            if (id != test.TestId)
+            {
+                return NotFound();
+            }
+
+            if (!DoesUserHaveAccess(test.ExperimentId))
             {
                 return NotFound();
             }
@@ -180,12 +203,12 @@ namespace Webapp.Controllers
             {
                 try
                 {
-                    _context.Update(tests);
-                    await _context.SaveChangesAsync();
+                    _context.Update(test);
+                    await _context.SaveChangesAsync().ConfigureAwait(true);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TestsExists(tests.TestId))
+                    if (!TestsExists(test.TestId))
                     {
                         return NotFound();
                     }
@@ -194,10 +217,11 @@ namespace Webapp.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ExperimentId"] = new SelectList(_context.Experiments, "ExperimentId", "Metadata", tests.ExperimentId);
-            return View(tests);
+
+            return View(test);
         }
 
         // GET: Tests/Delete/5
@@ -232,7 +256,18 @@ namespace Webapp.Controllers
 
         private bool TestsExists(int id)
         {
-            return _context.Tests.Any(e => e.TestId == id);
+            return _context.Tests.Any(t => t.TestId == id);
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1305:Укажите IFormatProvider", Justification = "<Ожидание>")]
+        private int GetCurrUserId()
+        {
+            return Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value);
+        }
+
+        private bool DoesUserHaveAccess(int experimentId)
+        {
+            return _context.UserExperiments.Any(ue => ue.UserId == GetCurrUserId() && ue.ExperimentId == experimentId);
         }
     }
 }
