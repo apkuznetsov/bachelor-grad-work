@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using System;
@@ -133,8 +133,7 @@ namespace Webapp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Проверить аргументы или открытые методы", Justification = "<Ожидание>")]
-        public async Task<IActionResult> Create([Bind("Name,Metadata,ExperimentId,ExperimentName")] TestCreateViewModel testVm)
+        public IActionResult Create([Bind("Name,Metadata,DurationSeconds,ExperimentId,ExperimentName,ExperimentSensorName")] TestCreateViewModel testVm)
         {
             if (!DoesUserHaveAccess(testVm.ExperimentId))
             {
@@ -153,18 +152,6 @@ namespace Webapp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Measurement(TestCreateViewModel testVm)
         {
-            if (testVm == null)
-            {
-                return NotFound();
-            }
-
-            if (!DoesUserHaveAccess(testVm.ExperimentId))
-            {
-                return NotFound();
-            }
-
-            testVm.StartedTime = DateTime.Now;
-
             return View(testVm);
         }
 
