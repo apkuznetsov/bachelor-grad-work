@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Webapp.Models.Tests
 {
@@ -24,5 +24,9 @@ namespace Webapp.Models.Tests
         [Display(Name = "Датчик")]
         public string ExperimentSensorName { get; set; }
 
+        [Display(Name = "Длительность измерения в секундах"),
+            Required(ErrorMessage = "Введите длительность"),
+            Range(1, 3600, ErrorMessage = "Максимальная длительность – 3600 секунд")]
+        public int DurationSeconds { get; set; }
     }
 }
