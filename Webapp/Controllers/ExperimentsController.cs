@@ -146,6 +146,9 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
+            experimentVm.ExperimentSensorId = db.ExperimentSensors.FirstOrDefault(m => m.ExperimentId == experimentVm.ExperimentId).SensorId;
+            experimentVm.ExperimentSensorName = db.Sensors.FirstOrDefault(m => m.SensorId == experimentVm.ExperimentSensorId).Name;
+
             return View(experimentVm);
         }
 
