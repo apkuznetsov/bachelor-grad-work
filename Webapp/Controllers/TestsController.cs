@@ -12,11 +12,11 @@ namespace Webapp.Controllers
 {
     public class TestsController : Controller
     {
-        private readonly WebappdbContext _context;
+        private readonly WebappdbContext db;
 
         public TestsController(WebappdbContext context)
         {
-            _context = context;
+            db = context;
         }
 
         // GET: Tests
@@ -33,14 +33,14 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
-            if (!_context.UserExperiments.Any(ue => ue.UserId == GetCurrUserId() && ue.ExperimentId == id))
+            if (!db.UserExperiments.Any(ue => ue.UserId == GetCurrUserId() && ue.ExperimentId == id))
             {
                 return NotFound();
             }
 
-            var userExperimentTestsNames = _context.Tests.
+            var userExperimentTestsNames = db.Tests.
                 Where(t => t.ExperimentId == id
-                && _context.UserExperiments.Any(ue => ue.UserId == GetCurrUserId() && ue.ExperimentId == t.ExperimentId)).
+                && db.UserExperiments.Any(ue => ue.UserId == GetCurrUserId() && ue.ExperimentId == t.ExperimentId)).
                 Select(t => new TestNameViewModel { TestId = t.TestId, Name = t.Name }).ToList();
 
             if (userExperimentTestsNames == null)
@@ -48,7 +48,7 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
-            ViewBag.ExperimentName = _context.Experiments.FirstOrDefault(e => e.ExperimentId == id).Name;
+            ViewBag.ExperimentName = db.Experiments.FirstOrDefault(e => e.ExperimentId == id).Name;
             ViewBag.ExperimentId = id;
 
             return View(userExperimentTestsNames);
@@ -62,7 +62,7 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
-            var testVm = await _context.Tests.
+            var testVm = await db.Tests.
                 Select(m =>
                 new TestDetailsViewModel
                 {
@@ -85,7 +85,10 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
-            testVm.ExperimentName = _context.Experiments.FirstOrDefault(m => m.ExperimentId == testVm.ExperimentId).Name;
+            testVm.ExperimentName = db.Experiments.FirstOrDefault(m => m.ExperimentId == testVm.ExperimentId).Name;
+            testVm.ExperimentSensorId = db.ExperimentSensors.FirstOrDefault(m => m.ExperimentId == testVm.ExperimentId).SensorId;
+            testVm.ExperimentSensorName = db.Sensors.FirstOrDefault(m => m.SensorId == testVm.ExperimentSensorId).Name;
+
             return View(testVm);
         }
 
@@ -103,7 +106,7 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
-            var experimentVm = _context.Experiments.
+            var experimentVm = db.Experiments.
                 Select(m =>
                 new ExperimentNameViewModel
                 {
@@ -112,11 +115,18 @@ namespace Webapp.Controllers
                 }).
                 FirstOrDefault(m => m.ExperimentId == id);
 
+            if (experimentVm == null)
+            {
+                return NotFound();
+            }
+
             TestCreateViewModel testVm = new TestCreateViewModel
             {
                 ExperimentId = experimentVm.ExperimentId,
-                ExperimentName = experimentVm.Name
+                ExperimentName = experimentVm.Name,
+                ExperimentSensorId = db.ExperimentSensors.FirstOrDefault(m => m.ExperimentId == experimentVm.ExperimentId).SensorId,
             };
+            testVm.ExperimentSensorName = db.Sensors.FirstOrDefault(m => m.SensorId == testVm.ExperimentSensorId).Name;
 
             return View(testVm);
         }
@@ -140,8 +150,8 @@ namespace Webapp.Controllers
                     ExperimentId = testVm.ExperimentId,
                     StartedTime = DateTime.Now
                 };
-                _context.Add(test);
-                await _context.SaveChangesAsync().ConfigureAwait(true);
+                db.Add(test);
+                await db.SaveChangesAsync().ConfigureAwait(true);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -157,7 +167,7 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
-            TestEditViewModel testVm = await _context.Tests.Select(m =>
+            TestEditViewModel testVm = await db.Tests.Select(m =>
             new TestEditViewModel
             {
                 TestId = m.TestId,
@@ -178,7 +188,10 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
-            testVm.ExperimentName = _context.Experiments.FirstOrDefault(m => m.ExperimentId == testVm.ExperimentId).Name;
+            testVm.ExperimentName = db.Experiments.FirstOrDefault(m => m.ExperimentId == testVm.ExperimentId).Name;
+            testVm.ExperimentSensorId = db.ExperimentSensors.FirstOrDefault(m => m.ExperimentId == testVm.ExperimentId).SensorId;
+            testVm.ExperimentSensorName = db.Sensors.FirstOrDefault(m => m.SensorId == testVm.ExperimentSensorId).Name;
+
             return View(testVm);
         }
 
@@ -202,8 +215,8 @@ namespace Webapp.Controllers
             {
                 try
                 {
-                    _context.Update(test);
-                    await _context.SaveChangesAsync().ConfigureAwait(true);
+                    db.Update(test);
+                    await db.SaveChangesAsync().ConfigureAwait(true);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -231,7 +244,7 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
-            var testVm = await _context.Tests.
+            var testVm = await db.Tests.
                 Select(m =>
                 new TestDeleteViewModel
                 {
@@ -254,7 +267,10 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
-            testVm.ExperimentName = _context.Experiments.FirstOrDefault(m => m.ExperimentId == testVm.ExperimentId).Name;
+            testVm.ExperimentName = db.Experiments.FirstOrDefault(m => m.ExperimentId == testVm.ExperimentId).Name;
+            testVm.ExperimentSensorId = db.ExperimentSensors.FirstOrDefault(m => m.ExperimentId == testVm.ExperimentId).SensorId;
+            testVm.ExperimentSensorName = db.Sensors.FirstOrDefault(m => m.SensorId == testVm.ExperimentSensorId).Name;
+
             return View(testVm);
         }
 
@@ -263,18 +279,18 @@ namespace Webapp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var test = await _context.Tests.FindAsync(id).ConfigureAwait(true);
+            var test = await db.Tests.FindAsync(id).ConfigureAwait(true);
             var experimentId = test.ExperimentId;
 
-            _context.Tests.Remove(test);
-            await _context.SaveChangesAsync().ConfigureAwait(true);
+            db.Tests.Remove(test);
+            await db.SaveChangesAsync().ConfigureAwait(true);
 
             return RedirectToAction("Experiment", new { id = experimentId });
         }
 
         private bool TestsExists(int id)
         {
-            return _context.Tests.Any(t => t.TestId == id);
+            return db.Tests.Any(t => t.TestId == id);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1305:Укажите IFormatProvider", Justification = "<Ожидание>")]
@@ -285,7 +301,7 @@ namespace Webapp.Controllers
 
         private bool DoesUserHaveAccess(int experimentId)
         {
-            return _context.UserExperiments.Any(ue => ue.UserId == GetCurrUserId() && ue.ExperimentId == experimentId);
+            return db.UserExperiments.Any(ue => ue.UserId == GetCurrUserId() && ue.ExperimentId == experimentId);
         }
     }
 }

@@ -16,5 +16,10 @@ namespace Webapp.Models.Tests
 
         [Display(Name = "Эксперимент")]
         public string ExperimentName { get; set; }
+
+        public int ExperimentSensorId { get; set; }
+
+        [Display(Name = "Датчик")]
+        public string ExperimentSensorName { get; set; }
     }
 }
