@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Webapp.Models;
 using Webapp.Models.Experiments;
+using Webapp.Models.ExperimentSensors;
 using WebappDb;
 
 namespace Webapp.Controllers
@@ -59,6 +60,9 @@ namespace Webapp.Controllers
             {
                 return NotFound();
             }
+
+            experimentVm.ExperimentSensorId = _context.ExperimentSensors.FirstOrDefault(m => m.ExperimentId == experimentVm.ExperimentId).SensorId;
+            experimentVm.ExperimentSensorName = _context.Sensors.FirstOrDefault(m => m.SensorId == experimentVm.ExperimentSensorId).Name;
 
             return View(experimentVm);
         }

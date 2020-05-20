@@ -15,5 +15,10 @@ namespace Webapp.Models.Experiments
 
         [Display(Name = "Дата создания")]
         public DateTime CreatedAt { get; set; }
+
+        public int ExperimentSensorId { get; set; }
+
+        [Display(Name = "Датчик")]
+        public string ExperimentSensorName { get; set; }
     }
 }
