@@ -7,18 +7,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using Webapp.Models;
 using Webapp.Models.Experiments;
-using Webapp.Models.ExperimentSensors;
 using WebappDb;
 
 namespace Webapp.Controllers
 {
     public class ExperimentsController : Controller
     {
-        private readonly WebappdbContext _context;
+        private readonly WebappdbContext db;
 
         public ExperimentsController(WebappdbContext context)
         {
-            _context = context;
+            db = context;
         }
 
         // GET: Experiments
@@ -26,8 +25,8 @@ namespace Webapp.Controllers
         public IActionResult Index()
         {
             // SELECT "ExperimentId", "Name" FROM experiments WHERE "ExperimentId" = Any (SELECT "ExperimentId" FROM user_experiments WHERE "UserId" = 122);
-            var userExperimentsNames = _context.Experiments.
-                Where(e => _context.UserExperiments.Any(ue => ue.UserId == GetCurrUserId() && ue.ExperimentId == e.ExperimentId)).
+            var userExperimentsNames = db.Experiments.
+                Where(e => db.UserExperiments.Any(ue => ue.UserId == GetCurrUserId() && ue.ExperimentId == e.ExperimentId)).
                 Select(e => new ExperimentNameViewModel { ExperimentId = e.ExperimentId, Name = e.Name }).ToList();
 
             return View(userExperimentsNames);
@@ -47,7 +46,7 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
-            ExperimentDetailsViewModel experimentVm = await _context.Experiments.Select(m =>
+            ExperimentDetailsViewModel experimentVm = await db.Experiments.Select(m =>
                 new ExperimentDetailsViewModel
                 {
                     ExperimentId = m.ExperimentId,
@@ -61,8 +60,8 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
-            experimentVm.ExperimentSensorId = _context.ExperimentSensors.FirstOrDefault(m => m.ExperimentId == experimentVm.ExperimentId).SensorId;
-            experimentVm.ExperimentSensorName = _context.Sensors.FirstOrDefault(m => m.SensorId == experimentVm.ExperimentSensorId).Name;
+            experimentVm.ExperimentSensorId = db.ExperimentSensors.FirstOrDefault(m => m.ExperimentId == experimentVm.ExperimentId).SensorId;
+            experimentVm.ExperimentSensorName = db.Sensors.FirstOrDefault(m => m.SensorId == experimentVm.ExperimentSensorId).Name;
 
             return View(experimentVm);
         }
@@ -71,7 +70,7 @@ namespace Webapp.Controllers
         public IActionResult Create()
         {
             ViewData["SensorId"] = new SelectList(
-                _context.Sensors,
+                db.Sensors,
                 "SensorId",
                 "Name");
 
@@ -93,8 +92,8 @@ namespace Webapp.Controllers
                     CreatedAt = DateTime.Now
                 };
 
-                _context.Add(experiment);
-                await _context.SaveChangesAsync().ConfigureAwait(true);
+                db.Add(experiment);
+                await db.SaveChangesAsync().ConfigureAwait(true);
 
                 ExperimentSensors experimentSensor = new ExperimentSensors
                 {
@@ -102,8 +101,8 @@ namespace Webapp.Controllers
                     SensorId = experimentVm.SensorId
                 };
 
-                _context.Add(experimentSensor);
-                await _context.SaveChangesAsync().ConfigureAwait(true);
+                db.Add(experimentSensor);
+                await db.SaveChangesAsync().ConfigureAwait(true);
 
                 UserExperiments userExperiment = new UserExperiments
                 {
@@ -111,14 +110,14 @@ namespace Webapp.Controllers
                     ExperimentId = experiment.ExperimentId
                 };
 
-                _context.Add(userExperiment);
-                await _context.SaveChangesAsync().ConfigureAwait(true);
+                db.Add(userExperiment);
+                await db.SaveChangesAsync().ConfigureAwait(true);
 
                 return RedirectToAction(nameof(Index));
             }
 
             ViewData["SensorId"] = new SelectList(
-                _context.Sensors,
+                db.Sensors,
                 "SensorId",
                 "Name",
                 experimentVm.SensorId);
@@ -134,7 +133,7 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
-            ExperimentEditViewModel experimentVm = await _context.Experiments.Select(m =>
+            ExperimentEditViewModel experimentVm = await db.Experiments.Select(m =>
             new ExperimentEditViewModel
             {
                 ExperimentId = m.ExperimentId,
@@ -165,8 +164,8 @@ namespace Webapp.Controllers
             {
                 try
                 {
-                    _context.Update(experiment);
-                    await _context.SaveChangesAsync().ConfigureAwait(true);
+                    db.Update(experiment);
+                    await db.SaveChangesAsync().ConfigureAwait(true);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -193,7 +192,7 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
-            ExperimentDeleteViewModel experimentVm = await _context.Experiments.Select(m =>
+            ExperimentDeleteViewModel experimentVm = await db.Experiments.Select(m =>
                 new ExperimentDeleteViewModel
                 {
                     ExperimentId = m.ExperimentId,
@@ -215,20 +214,20 @@ namespace Webapp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var userExperiment = _context.UserExperiments.Where(m => m.ExperimentId == id);
-            _context.UserExperiments.RemoveRange(userExperiment);
-            await _context.SaveChangesAsync().ConfigureAwait(true);
+            var userExperiment = db.UserExperiments.Where(m => m.ExperimentId == id);
+            db.UserExperiments.RemoveRange(userExperiment);
+            await db.SaveChangesAsync().ConfigureAwait(true);
 
-            var experiment = await _context.Experiments.FindAsync(id).ConfigureAwait(true);
-            _context.Experiments.Remove(experiment);
-            await _context.SaveChangesAsync().ConfigureAwait(true);
+            var experiment = await db.Experiments.FindAsync(id).ConfigureAwait(true);
+            db.Experiments.Remove(experiment);
+            await db.SaveChangesAsync().ConfigureAwait(true);
 
             return RedirectToAction(nameof(Index));
         }
 
         private bool ExperimentsExists(int id)
         {
-            return _context.Experiments.Any(e => e.ExperimentId == id);
+            return db.Experiments.Any(e => e.ExperimentId == id);
         }
     }
 }
