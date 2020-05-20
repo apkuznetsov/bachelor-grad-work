@@ -24,6 +24,12 @@
                 <span asp-validation-for="Metadata" class="text-danger"></span>
             </div>
 
+            <div class="form-group">
+                <label asp-for="DurationSeconds" class="control-label"></label>
+                <input asp-for="DurationSeconds" class="form-control" />
+                <span asp-validation-for="DurationSeconds" class="text-danger"></span>
+            </div>
+
             <input type="hidden" asp-for="ExperimentId" />
 
             <div class="form-group">
