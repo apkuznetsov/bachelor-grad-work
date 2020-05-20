@@ -12,9 +12,9 @@ namespace Webapp.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly webappdbContext _context;
+        private readonly WebappdbContext _context;
 
-        public AccountController(webappdbContext context)
+        public AccountController(WebappdbContext context)
         {
             _context = context;
         }

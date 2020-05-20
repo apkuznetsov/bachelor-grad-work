@@ -2,13 +2,13 @@
 
 namespace WebappDb
 {
-    public partial class webappdbContext : DbContext
+    public partial class WebappdbContext : DbContext
     {
-        public webappdbContext()
+        public WebappdbContext()
         {
         }
 
-        public webappdbContext(DbContextOptions<webappdbContext> options)
+        public WebappdbContext(DbContextOptions<WebappdbContext> options)
             : base(options)
         {
         }

@@ -13,9 +13,9 @@ namespace Webapp.Controllers
 {
     public class ExperimentsController : Controller
     {
-        private readonly webappdbContext _context;
+        private readonly WebappdbContext _context;
 
-        public ExperimentsController(webappdbContext context)
+        public ExperimentsController(WebappdbContext context)
         {
             _context = context;
         }

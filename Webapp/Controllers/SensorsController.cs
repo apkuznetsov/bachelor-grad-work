@@ -11,9 +11,9 @@ namespace Webapp.Controllers
 {
     public class SensorsController : Controller
     {
-        private readonly webappdbContext _context;
+        private readonly WebappdbContext _context;
 
-        public SensorsController(webappdbContext context)
+        public SensorsController(WebappdbContext context)
         {
             _context = context;
         }
