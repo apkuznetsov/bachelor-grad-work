@@ -7,6 +7,18 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Webapp", "Webapp.csproj", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebappDb", "..\WebappDb\WebappDb.csproj", "{7A4A5C5B-2D48-4DAB-943A-84499D134335}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SensorOutputParser", "..\..\kurepin\SensorConnector\SensorOutputParser\SensorOutputParser.csproj", "{BE82848C-56DF-4D9F-9064-4A187FC3A35E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UdpClient", "..\..\kurepin\UdpClient\UdpClient\UdpClient.csproj", "{9F353749-F00A-4282-BB16-5A3C7F287CCA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UdpServer", "..\..\kurepin\UdpServer\UdpServer\UdpServer.csproj", "{71D6BF80-DE39-4BF9-89A4-DE99D35CEB2F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SensorListener", "..\..\kurepin\SensorConnector\SensorListener\SensorListener.csproj", "{5AED0956-814E-4BCC-8877-4EC780A1ED5B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SensorConnector.Persistence", "..\..\kurepin\SensorConnector\SensorConnector.Persistence\SensorConnector.Persistence.csproj", "{3E32666E-34C7-4B55-A48B-BC9B5156FE04}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SensorConnector.Common", "..\..\kurepin\SensorConnector\SensorConnector.Common\SensorConnector.Common.csproj", "{49A79BAE-9487-4661-B62C-FB9E50B0819A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +33,30 @@ Global
 		{7A4A5C5B-2D48-4DAB-943A-84499D134335}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A4A5C5B-2D48-4DAB-943A-84499D134335}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A4A5C5B-2D48-4DAB-943A-84499D134335}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE82848C-56DF-4D9F-9064-4A187FC3A35E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE82848C-56DF-4D9F-9064-4A187FC3A35E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE82848C-56DF-4D9F-9064-4A187FC3A35E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE82848C-56DF-4D9F-9064-4A187FC3A35E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F353749-F00A-4282-BB16-5A3C7F287CCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F353749-F00A-4282-BB16-5A3C7F287CCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F353749-F00A-4282-BB16-5A3C7F287CCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F353749-F00A-4282-BB16-5A3C7F287CCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71D6BF80-DE39-4BF9-89A4-DE99D35CEB2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71D6BF80-DE39-4BF9-89A4-DE99D35CEB2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71D6BF80-DE39-4BF9-89A4-DE99D35CEB2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71D6BF80-DE39-4BF9-89A4-DE99D35CEB2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AED0956-814E-4BCC-8877-4EC780A1ED5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AED0956-814E-4BCC-8877-4EC780A1ED5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AED0956-814E-4BCC-8877-4EC780A1ED5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AED0956-814E-4BCC-8877-4EC780A1ED5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E32666E-34C7-4B55-A48B-BC9B5156FE04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E32666E-34C7-4B55-A48B-BC9B5156FE04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E32666E-34C7-4B55-A48B-BC9B5156FE04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E32666E-34C7-4B55-A48B-BC9B5156FE04}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49A79BAE-9487-4661-B62C-FB9E50B0819A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49A79BAE-9487-4661-B62C-FB9E50B0819A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49A79BAE-9487-4661-B62C-FB9E50B0819A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49A79BAE-9487-4661-B62C-FB9E50B0819A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
