@@ -24,7 +24,7 @@ namespace Webapp
             services.AddControllersWithViews();
 
             services.AddEntityFrameworkNpgsql().
-                AddDbContext<webappdbContext>(opt =>
+                AddDbContext<WebappdbContext>(opt =>
                 opt.UseNpgsql(Configuration.GetConnectionString("WebappDbConnection")));
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

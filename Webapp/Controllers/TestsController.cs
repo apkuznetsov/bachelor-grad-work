@@ -12,9 +12,9 @@ namespace Webapp.Controllers
 {
     public class TestsController : Controller
     {
-        private readonly webappdbContext _context;
+        private readonly WebappdbContext _context;
 
-        public TestsController(webappdbContext context)
+        public TestsController(WebappdbContext context)
         {
             _context = context;
         }
