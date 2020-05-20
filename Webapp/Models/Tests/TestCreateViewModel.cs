@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace Webapp.Models.Tests
 {
@@ -6,10 +6,12 @@ namespace Webapp.Models.Tests
     {
         public int TestId { get; set; }
 
-        [Display(Name = "Название")]
+        [Display(Name = "Название"),
+            Required(ErrorMessage = "Введите название измерения")]
         public string Name { get; set; }
 
-        [Display(Name = "Описание")]
+        [Display(Name = "Описание"),
+            Required(ErrorMessage = "Введите описание измерения")]
         public string Metadata { get; set; }
 
         public int ExperimentId { get; set; }
@@ -21,5 +23,6 @@ namespace Webapp.Models.Tests
 
         [Display(Name = "Датчик")]
         public string ExperimentSensorName { get; set; }
+
     }
 }
