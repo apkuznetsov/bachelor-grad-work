@@ -6,10 +6,17 @@ namespace Webapp.Models.Experiments
     {
         public int ExperimentId { get; set; }
 
-        [Display(Name = "Название")]
+        [Display(Name = "Название"),
+            Required(ErrorMessage = "Введите название эксперимента")]
         public string Name { get; set; }
 
-        [Display(Name = "Описание")]
+        [Display(Name = "Описание"),
+            Required(ErrorMessage = "Введите описание эксперимента")]
         public string Metadata { get; set; }
+
+        [Display(Name = "Датчик"),
+            Required(ErrorMessage = "Выберите датчик")]
+        public int SensorId { get; set; }
+
     }
 }

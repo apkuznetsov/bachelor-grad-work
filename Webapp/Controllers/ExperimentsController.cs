@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using System;
@@ -65,6 +66,11 @@ namespace Webapp.Controllers
         // GET: Experiments/Create
         public IActionResult Create()
         {
+            ViewData["SensorId"] = new SelectList(
+                _context.Sensors,
+                "SensorId",
+                "Name");
+
             return View();
         }
 
@@ -72,7 +78,7 @@ namespace Webapp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Проверить аргументы или открытые методы", Justification = "<Ожидание>")]
-        public async Task<IActionResult> Create([Bind("ExperimentId,Name,Metadata")] ExperimentCreateViewModel experimentVm)
+        public async Task<IActionResult> Create([Bind("Name,Metadata,SensorId")] ExperimentCreateViewModel experimentVm)
         {
             if (ModelState.IsValid)
             {
@@ -86,6 +92,15 @@ namespace Webapp.Controllers
                 _context.Add(experiment);
                 await _context.SaveChangesAsync().ConfigureAwait(true);
 
+                ExperimentSensors experimentSensor = new ExperimentSensors
+                {
+                    ExperimentId = experiment.ExperimentId,
+                    SensorId = experimentVm.SensorId
+                };
+
+                _context.Add(experimentSensor);
+                await _context.SaveChangesAsync().ConfigureAwait(true);
+
                 UserExperiments userExperiment = new UserExperiments
                 {
                     UserId = GetCurrUserId(),
@@ -97,6 +112,12 @@ namespace Webapp.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewData["SensorId"] = new SelectList(
+                _context.Sensors,
+                "SensorId",
+                "Name",
+                experimentVm.SensorId);
 
             return View(experimentVm);
         }

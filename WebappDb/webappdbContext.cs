@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace WebappDb
 {
@@ -98,10 +96,6 @@ namespace WebappDb
                     .HasName("PK_ExperimentSensors");
 
                 entity.ToTable("experiment_sensors");
-
-                entity.Property(e => e.ExperimentSensorId).ValueGeneratedNever();
-
-                entity.Property(e => e.ExperimentId).ValueGeneratedOnAdd();
 
                 entity.HasOne(d => d.Experiment)
                     .WithMany(p => p.ExperimentSensors)
