@@ -189,6 +189,9 @@ namespace Webapp.Controllers
             }
 
             testVm.ExperimentName = db.Experiments.FirstOrDefault(m => m.ExperimentId == testVm.ExperimentId).Name;
+            testVm.ExperimentSensorId = db.ExperimentSensors.FirstOrDefault(m => m.ExperimentId == testVm.ExperimentId).SensorId;
+            testVm.ExperimentSensorName = db.Sensors.FirstOrDefault(m => m.SensorId == testVm.ExperimentSensorId).Name;
+
             return View(testVm);
         }
 
