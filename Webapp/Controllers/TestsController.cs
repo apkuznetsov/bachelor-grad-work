@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using System;
@@ -143,7 +143,7 @@ namespace Webapp.Controllers
 
             if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Measurement), testVm);
+                return View("Measurement", testVm);
             }
 
             return View(testVm);
