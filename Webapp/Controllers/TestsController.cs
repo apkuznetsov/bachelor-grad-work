@@ -143,18 +143,27 @@ namespace Webapp.Controllers
 
             if (ModelState.IsValid)
             {
-                Tests test = new Tests
-                {
-                    Name = testVm.Name,
-                    Metadata = testVm.Metadata,
-                    ExperimentId = testVm.ExperimentId,
-                    StartedTime = DateTime.Now
-                };
-                db.Add(test);
-                await db.SaveChangesAsync().ConfigureAwait(true);
-
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Measurement), testVm);
             }
+
+            return View(testVm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Measurement(TestCreateViewModel testVm)
+        {
+            if (testVm == null)
+            {
+                return NotFound();
+            }
+
+            if (!DoesUserHaveAccess(testVm.ExperimentId))
+            {
+                return NotFound();
+            }
+
+            testVm.StartedTime = DateTime.Now;
 
             return View(testVm);
         }
