@@ -112,11 +112,18 @@ namespace Webapp.Controllers
                 }).
                 FirstOrDefault(m => m.ExperimentId == id);
 
+            if (experimentVm == null)
+            {
+                return NotFound();
+            }
+
             TestCreateViewModel testVm = new TestCreateViewModel
             {
                 ExperimentId = experimentVm.ExperimentId,
-                ExperimentName = experimentVm.Name
+                ExperimentName = experimentVm.Name,
+                ExperimentSensorId = db.ExperimentSensors.FirstOrDefault(m => m.ExperimentId == experimentVm.ExperimentId).SensorId,
             };
+            testVm.ExperimentSensorName = db.Sensors.FirstOrDefault(m => m.SensorId == testVm.ExperimentSensorId).Name;
 
             return View(testVm);
         }
