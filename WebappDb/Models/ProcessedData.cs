@@ -3,7 +3,6 @@
     public partial class ProcessedData
     {
         public int ProcessedDataId { get; set; }
-        public string Metadata { get; set; }
         public int ProcessingId { get; set; }
         public int StorageFileId { get; set; }
 

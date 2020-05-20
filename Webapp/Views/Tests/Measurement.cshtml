@@ -1,0 +1,71 @@
+﻿@model Webapp.Models.Tests.TestCreateViewModel
+
+@{
+    ViewData["Title"] = "ИЗМЕРЕНИЕ";
+
+    Model.StartedTime = DateTime.Now;
+}
+
+<div>
+    <h4>ИЗМЕРЕНИЕ</h4>
+    <hr />
+
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Metadata)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Metadata)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.StartedTime)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.StartedTime)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.EndedTime)
+        </dt>
+        <dd class="col-sm-10">         
+            <span id="timerLabel" runat="server"></span>
+
+            <script type="text/javascript">
+                function countdown() {
+                    seconds = document.getElementById("timerLabel").innerHTML;
+                    if (seconds > 0) {
+                        document.getElementById("timerLabel").innerHTML = seconds - 1;
+                        setTimeout("countdown()", 1000);
+                    }
+                }
+                setTimeout("countdown()", 1000);
+            </script>
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ExperimentName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ExperimentName)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ExperimentSensorName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ExperimentSensorName)
+        </dd>
+    </dl>
+</div>
+
+<div>
+
+</div>

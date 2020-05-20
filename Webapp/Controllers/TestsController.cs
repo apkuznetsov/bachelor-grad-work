@@ -133,8 +133,7 @@ namespace Webapp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Проверить аргументы или открытые методы", Justification = "<Ожидание>")]
-        public async Task<IActionResult> Create([Bind("Name,Metadata,ExperimentId,ExperimentName")] TestCreateViewModel testVm)
+        public IActionResult Create([Bind("Name,Metadata,DurationSeconds,ExperimentId,ExperimentName,ExperimentSensorName")] TestCreateViewModel testVm)
         {
             if (!DoesUserHaveAccess(testVm.ExperimentId))
             {
@@ -143,19 +142,16 @@ namespace Webapp.Controllers
 
             if (ModelState.IsValid)
             {
-                Tests test = new Tests
-                {
-                    Name = testVm.Name,
-                    Metadata = testVm.Metadata,
-                    ExperimentId = testVm.ExperimentId,
-                    StartedTime = DateTime.Now
-                };
-                db.Add(test);
-                await db.SaveChangesAsync().ConfigureAwait(true);
-
-                return RedirectToAction(nameof(Index));
+                return View("Measurement", testVm);
             }
 
+            return View(testVm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Measurement(TestCreateViewModel testVm)
+        {
             return View(testVm);
         }
 
