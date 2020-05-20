@@ -13,7 +13,6 @@ namespace WebappDb
         public int StorageFileId { get; set; }
         public string Uri { get; set; }
         public string Description { get; set; }
-        public bool IsInput { get; set; }
 
         public virtual ICollection<ProcessedData> ProcessedData { get; set; }
         public virtual ICollection<TestStorageFiles> TestStorageFiles { get; set; }

@@ -164,8 +164,6 @@ namespace WebappDb
             {
                 entity.ToTable("processed_data");
 
-                entity.Property(e => e.Metadata).IsRequired();
-
                 entity.HasOne(d => d.Processing)
                     .WithMany(p => p.ProcessedData)
                     .HasForeignKey(d => d.ProcessingId)
