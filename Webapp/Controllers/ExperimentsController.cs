@@ -146,6 +146,9 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
+            experimentVm.ExperimentSensorId = db.ExperimentSensors.FirstOrDefault(m => m.ExperimentId == experimentVm.ExperimentId).SensorId;
+            experimentVm.ExperimentSensorName = db.Sensors.FirstOrDefault(m => m.SensorId == experimentVm.ExperimentSensorId).Name;
+
             return View(experimentVm);
         }
 
@@ -206,6 +209,9 @@ namespace Webapp.Controllers
                 return NotFound();
             }
 
+            experimentVm.ExperimentSensorId = db.ExperimentSensors.FirstOrDefault(m => m.ExperimentId == experimentVm.ExperimentId).SensorId;
+            experimentVm.ExperimentSensorName = db.Sensors.FirstOrDefault(m => m.SensorId == experimentVm.ExperimentSensorId).Name;
+
             return View(experimentVm);
         }
 
@@ -216,6 +222,10 @@ namespace Webapp.Controllers
         {
             var userExperiment = db.UserExperiments.Where(m => m.ExperimentId == id);
             db.UserExperiments.RemoveRange(userExperiment);
+            await db.SaveChangesAsync().ConfigureAwait(true);
+
+            var experimentSensor = db.ExperimentSensors.Where(m => m.ExperimentId == id);
+            db.ExperimentSensors.RemoveRange(experimentSensor);
             await db.SaveChangesAsync().ConfigureAwait(true);
 
             var experiment = await db.Experiments.FindAsync(id).ConfigureAwait(true);
