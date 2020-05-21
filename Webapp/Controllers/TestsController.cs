@@ -134,7 +134,7 @@ namespace Webapp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Name,Metadata,DurationSeconds,ExperimentId,ExperimentName,ExperimentSensorName")] TestCreateViewModel testVm)
+        public async Task<IActionResult> Create([Bind("Name,Metadata,DurationSeconds,ExperimentId,ExperimentName,ExperimentSensorName")] TestCreateViewModel testVm)
         {
             if (!DoesUserHaveAccess(testVm.ExperimentId))
             {
@@ -143,6 +143,18 @@ namespace Webapp.Controllers
 
             if (ModelState.IsValid)
             {
+                Tests test = new Tests
+                {
+                    Name = testVm.Name,
+                    Metadata = testVm.Metadata,
+                    ExperimentId = testVm.ExperimentId,
+                    StartedTime = DateTime.Now
+                };
+                test.EndedTime = test.StartedTime.AddSeconds(testVm.DurationSeconds);
+
+                db.Add(test);
+                await db.SaveChangesAsync().ConfigureAwait(true);
+
                 return View("Measurement", testVm);
             }
 
