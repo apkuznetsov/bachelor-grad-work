@@ -7,3 +7,4 @@ using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("Design", "CA1062:Проверить аргументы или открытые методы", Justification = "<Ожидание>", Scope = "member", Target = "~M:Webapp.Controllers.TestsController.Measurement(Webapp.Models.Tests.TestCreateViewModel)~Microsoft.AspNetCore.Mvc.IActionResult")]
 [assembly: SuppressMessage("Design", "CA1062:Проверить аргументы или открытые методы", Justification = "<Ожидание>", Scope = "member", Target = "~M:Webapp.Controllers.TestsController.Create(Webapp.Models.Tests.TestCreateViewModel)~System.Threading.Tasks.Task{Microsoft.AspNetCore.Mvc.IActionResult}")]
+[assembly: SuppressMessage("Globalization", "CA1305:Укажите IFormatProvider", Justification = "<Ожидание>", Scope = "member", Target = "~M:Webapp.Helpers.CommandBuilder.BuildSensorOutputParserStartCommand(System.Int32,System.DateTime,System.DateTime,System.String,System.Int32,System.String)~System.String")]

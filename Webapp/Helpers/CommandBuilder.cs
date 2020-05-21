@@ -1,4 +1,6 @@
-﻿namespace Webapp.Helpers
+﻿using System;
+
+namespace Webapp.Helpers
 {
     public static class CommandBuilder
     {
@@ -10,15 +12,17 @@
             return $"-testId {testId} -executionTime {durationSeconds} -sensors {sensorIpAddress}:{sensorPort}";
         }
 
-        public static string BuildSensorOutputParserCommand(
+        public static string BuildSensorOutputParserStartCommand(
             int testId, 
-            string leftTimeBorder, string rightTimeBorder, 
+            DateTime leftTimeBorder, DateTime rightTimeBorder, 
             string sensorIpAddress, int sensorPort, 
             string dirPath)
         {
-            return $"-directoryPath {dirPath} " +
-                $"-leftTimeBorder {leftTimeBorder} " +
-                $"-rightTimeBorder {rightTimeBorder} " +
+            string dateTimePattern = "yyyy-MM-ddTHH:mm:ssZ";
+
+            return $"-directoryPath \"{dirPath}\" " +
+                $"-leftTimeBorder {leftTimeBorder.ToString(dateTimePattern)} " +
+                $"-rightTimeBorder {rightTimeBorder.ToString(dateTimePattern)} " +
                 $"-testId {testId} " +
                 $"-sensors {sensorIpAddress}:{sensorPort}";
         }
