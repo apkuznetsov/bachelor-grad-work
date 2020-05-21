@@ -163,6 +163,7 @@ namespace Webapp.Controllers
                     @"D:\repos\kurepin\SensorConnector\SensorListener\bin\Debug\netcoreapp3.1\SensorListener.exe",
                     sensorConnectorCommand);
 
+                testVm.StartedTime = test.StartedTime;
                 return View("Measurement", testVm);
             }
 
