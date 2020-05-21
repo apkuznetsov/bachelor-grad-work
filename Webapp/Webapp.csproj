@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\kurepin\SensorConnector\SensorListener\SensorListener.csproj" />
     <ProjectReference Include="..\WebappDb\WebappDb.csproj" />
   </ItemGroup>
 

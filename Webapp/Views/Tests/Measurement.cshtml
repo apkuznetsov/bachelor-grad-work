@@ -2,8 +2,6 @@
 
 @{
     ViewData["Title"] = "ИЗМЕРЕНИЕ";
-
-    Model.StartedTime = DateTime.Now;
 }
 
 <div>
@@ -33,20 +31,21 @@
         </dd>
 
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.EndedTime)
+            ИЗМЕРЕНИЕ
         </dt>
-        <dd class="col-sm-10">         
-            <span id="timerLabel" runat="server"></span>
+        <dd class="col-sm-10">
+            <p id="timer"></p>
+            <script>
+                var seconds = @Model.DurationSeconds;
+                var interval = setInterval(function () {
+                    seconds--;
+                    document.getElementById("timer").innerHTML = seconds + " с";
 
-            <script type="text/javascript">
-                function countdown() {
-                    seconds = document.getElementById("timerLabel").innerHTML;
-                    if (seconds > 0) {
-                        document.getElementById("timerLabel").innerHTML = seconds - 1;
-                        setTimeout("countdown()", 1000);
+                    if (seconds < 0) {
+                        clearInterval(interval);
+                        document.getElementById("timer").innerHTML = "ЗАВЕРШЕНО";
                     }
-                }
-                setTimeout("countdown()", 1000);
+                }, 1000);
             </script>
         </dd>
 

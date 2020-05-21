@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Internal;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Webapp.Helpers;
 using Webapp.Models;
 using Webapp.Models.Tests;
 using WebappDb;
@@ -133,7 +134,7 @@ namespace Webapp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Name,Metadata,DurationSeconds,ExperimentId,ExperimentName,ExperimentSensorName")] TestCreateViewModel testVm)
+        public async Task<IActionResult> Create([Bind("Name,Metadata,DurationSeconds,ExperimentId,ExperimentName,ExperimentSensorName")] TestCreateViewModel testVm)
         {
             if (!DoesUserHaveAccess(testVm.ExperimentId))
             {
@@ -142,6 +143,27 @@ namespace Webapp.Controllers
 
             if (ModelState.IsValid)
             {
+                Tests test = new Tests
+                {
+                    Name = testVm.Name,
+                    Metadata = testVm.Metadata,
+                    ExperimentId = testVm.ExperimentId,
+                    StartedTime = DateTime.Now
+                };
+                test.EndedTime = test.StartedTime.AddSeconds(testVm.DurationSeconds);
+
+                db.Add(test);
+                await db.SaveChangesAsync().ConfigureAwait(true);
+
+                var sensorId = db.ExperimentSensors.FirstOrDefault(m => m.ExperimentId == test.ExperimentId).SensorId;
+                var sensor = await db.Sensors.FirstOrDefaultAsync(m => m.SensorId == sensorId).ConfigureAwait(true);
+                var sensorConnectorCommand = CommandBuilder.BuildSensorListenerStartCommand(test.TestId, sensor.IpAddress, sensor.Port, testVm.DurationSeconds);
+
+                System.Diagnostics.Process.Start(
+                    @"D:\repos\kurepin\SensorConnector\SensorListener\bin\Debug\netcoreapp3.1\SensorListener.exe",
+                    sensorConnectorCommand);
+
+                testVm.StartedTime = test.StartedTime;
                 return View("Measurement", testVm);
             }
 
