@@ -1,13 +1,13 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Webapp.Helpers;
 using Webapp.Models;
 using Webapp.Models.Tests;
 using WebappDb;
-using SensorListener;
 
 namespace Webapp.Controllers
 {
@@ -154,6 +154,14 @@ namespace Webapp.Controllers
 
                 db.Add(test);
                 await db.SaveChangesAsync().ConfigureAwait(true);
+
+                var sensorId = db.ExperimentSensors.FirstOrDefault(m => m.ExperimentId == test.ExperimentId).SensorId;
+                var sensor = await db.Sensors.FirstOrDefaultAsync(m => m.SensorId == sensorId).ConfigureAwait(true);
+                var sensorConnectorCommand = CommandBuilder.BuildSensorListenerStartCommand(test.TestId, sensor.IpAddress, sensor.Port, testVm.DurationSeconds);
+
+                System.Diagnostics.Process.Start(
+                    @"D:\repos\kurepin\SensorConnector\SensorListener\bin\Debug\netcoreapp3.1\SensorListener.exe",
+                    sensorConnectorCommand);
 
                 return View("Measurement", testVm);
             }

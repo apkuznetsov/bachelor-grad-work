@@ -6,3 +6,4 @@
 using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("Design", "CA1062:Проверить аргументы или открытые методы", Justification = "<Ожидание>", Scope = "member", Target = "~M:Webapp.Controllers.TestsController.Measurement(Webapp.Models.Tests.TestCreateViewModel)~Microsoft.AspNetCore.Mvc.IActionResult")]
+[assembly: SuppressMessage("Design", "CA1062:Проверить аргументы или открытые методы", Justification = "<Ожидание>", Scope = "member", Target = "~M:Webapp.Controllers.TestsController.Create(Webapp.Models.Tests.TestCreateViewModel)~System.Threading.Tasks.Task{Microsoft.AspNetCore.Mvc.IActionResult}")]
