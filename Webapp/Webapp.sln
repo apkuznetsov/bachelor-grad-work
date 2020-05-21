@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Webapp", "Webapp.csproj", "{730C0671-5C1D-43A5-A858-1E96DBD8BAC7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5AED0956-814E-4BCC-8877-4EC780A1ED5B} = {5AED0956-814E-4BCC-8877-4EC780A1ED5B}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebappDb", "..\WebappDb\WebappDb.csproj", "{7A4A5C5B-2D48-4DAB-943A-84499D134335}"
 EndProject

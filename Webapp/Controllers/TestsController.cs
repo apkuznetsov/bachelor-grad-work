@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using System;
@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Webapp.Models;
 using Webapp.Models.Tests;
 using WebappDb;
+using SensorListener;
 
 namespace Webapp.Controllers
 {
