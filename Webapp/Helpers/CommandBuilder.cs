@@ -1,4 +1,4 @@
-﻿namespace Webapp.Helpers
+namespace Webapp.Helpers
 {
     public static class CommandBuilder
     {
@@ -6,5 +6,18 @@
         {
             return $"-testId {testId} -executionTime {durationSeconds} -sensors {sensorIpAddress}:{sensorPort}";
         }
+
+        public static string BuildSensorOutputParserCommand(
+            int testId, 
+            string leftTimeBorder, string rightTimeBorder, 
+            string sensorIpAddress, int sensorPort, 
+            string dirPath)
+        {
+            return $"-directoryPath {dirPath} " +
+                $"-leftTimeBorder {leftTimeBorder} " +
+                $"-rightTimeBorder {rightTimeBorder} " +
+                $"-testId {testId} " +
+                $"-sensors {sensorIpAddress}:{sensorPort}";
     }
+}
 }
