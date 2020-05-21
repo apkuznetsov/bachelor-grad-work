@@ -1,8 +1,11 @@
-namespace Webapp.Helpers
+﻿namespace Webapp.Helpers
 {
     public static class CommandBuilder
     {
-        public static string BuildSensorListenerStartCommand(int testId, string sensorIpAddress, int sensorPort, int durationSeconds)
+        public static string BuildSensorListenerStartCommand(
+            int testId, 
+            string sensorIpAddress, int sensorPort, 
+            int durationSeconds)
         {
             return $"-testId {testId} -executionTime {durationSeconds} -sensors {sensorIpAddress}:{sensorPort}";
         }
@@ -18,6 +21,6 @@ namespace Webapp.Helpers
                 $"-rightTimeBorder {rightTimeBorder} " +
                 $"-testId {testId} " +
                 $"-sensors {sensorIpAddress}:{sensorPort}";
+        }
     }
-}
 }
