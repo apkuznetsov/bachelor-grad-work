@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Webapp.Helpers;
@@ -91,6 +92,40 @@ namespace Webapp.Controllers
             testVm.ExperimentSensorName = db.Sensors.FirstOrDefault(m => m.SensorId == testVm.ExperimentSensorId).Name;
 
             return View(testVm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Download([Bind("TestId,StartedTime,EndedTime,ExperimentSensorId")] TestDownloadViewModel testVm)
+        {
+            string dirPath = "experiments-data";
+
+            var sensor = await db.Sensors.FirstOrDefaultAsync(m => m.SensorId == testVm.ExperimentSensorId).ConfigureAwait(true);
+            string sensorIpAddress = sensor.IpAddress;
+            int sensorPort = sensor.Port;
+
+            string dateTimePattern = "yyyy-MM-dd_HH-mm-ss";
+            DateTime endedTime = (DateTime)(testVm.EndedTime);
+            string fileName = $"{dirPath}\\Test-{testVm.TestId} " +
+                $"outputs_from_{testVm.StartedTime.ToString(dateTimePattern)}_to_" +
+                $"{endedTime.ToString(dateTimePattern)}" +
+                $".json";
+
+            if (!System.IO.File.Exists(fileName))
+            {
+                var sensorOutputParserCommand = CommandBuilder.BuildSensorOutputParserStartCommand(
+                    testVm.TestId,
+                    testVm.StartedTime, (DateTime)testVm.EndedTime,
+                    sensor.IpAddress, sensor.Port,
+                    dirPath);
+
+                System.Diagnostics.Process.Start(
+                    @"D:\repos\kurepin\SensorConnector\SensorOutputParser\bin\Debug\netcoreapp3.1\SensorOutputParser.exe",
+                    sensorOutputParserCommand);
+            }
+
+            string contentType = "application/json";
+            return File(fileName, contentType, Path.GetFileName(fileName));
         }
 
         // GET: Tests/Create/ExperimentId

@@ -59,6 +59,19 @@
             </a>
         </dd>
     </dl>
+
+    <form asp-controller="Tests"
+          asp-action="Download">
+        <div class="form-group">
+            <div class="form-group">
+                <input type="hidden" asp-for="TestId" />
+                <input type="hidden" asp-for="StartedTime" />
+                <input type="hidden" asp-for="EndedTime" />
+                <input type="hidden" asp-for="ExperimentSensorId" />
+                <input type="submit" value="Скачать данные измерения" class="btn btn-primary" />
+            </div>
+        </div>
+    </form>
 </div>
 
 <div>
