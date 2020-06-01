@@ -120,7 +120,7 @@ namespace Webapp.Controllers
                     dirPath);
 
                 System.Diagnostics.Process.Start(
-                    @"D:\repos\kurepin\SensorConnector\SensorOutputParser\bin\Debug\netcoreapp3.1\SensorOutputParser.exe",
+                    @"SensorOutputParser\\SensorOutputParser",
                     sensorOutputParserCommand);
             }
 
@@ -195,7 +195,7 @@ namespace Webapp.Controllers
                 var sensorConnectorCommand = CommandBuilder.BuildSensorListenerStartCommand(test.TestId, sensor.IpAddress, sensor.Port, testVm.DurationSeconds);
 
                 System.Diagnostics.Process.Start(
-                    @"D:\repos\kurepin\SensorConnector\SensorListener\bin\Debug\netcoreapp3.1\SensorListener.exe",
+                    @"SensorListener\SensorListener",
                     sensorConnectorCommand);
 
                 testVm.StartedTime = test.StartedTime;
